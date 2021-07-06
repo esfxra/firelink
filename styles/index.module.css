@@ -1,0 +1,16 @@
+.profiles {
+  display: flex;
+}
+
+.profile {
+  margin-right: 5px;
+  padding: 7.5px;
+
+  background: linear-gradient( rgb(255, 83, 83), rgb(255, 94, 0));
+  color: white;
+  border-radius: 5px;
+}
+
+.profile:last-of-type {
+  margin-right: 0;
+}

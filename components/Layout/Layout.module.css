@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  
+  width: 60%;
+  height: 100vh;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: left;
+}
