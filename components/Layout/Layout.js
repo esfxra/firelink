@@ -16,6 +16,15 @@ export default function Layout({ title, children }) {
             <h1>campfire</h1>
           </a>
         </Link>
+
+        <div className={styles['header-links']}>
+          <Link href="/login">
+            <a className={styles.link}>login</a>
+          </Link>
+          <Link href="/register">
+            <a className={styles.link}>register</a>
+          </Link>
+        </div>
       </header>
 
       <main>{children}</main>

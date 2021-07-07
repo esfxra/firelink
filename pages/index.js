@@ -5,12 +5,7 @@ import styles from '../styles/index.module.css';
 export default function Home({ data }) {
   return (
     <Layout title="campfire">
-      <Link href="/register">
-        <a>
-          <h2>register</h2>
-        </a>
-      </Link>
-      <h2>discover profiles</h2>
+      <h1 className={styles.headline}>discover profiles</h1>
       <div className={styles.profiles}>
         {data.map((user) => (
           <Link href={`/${user.username}`} key={user._id}>
