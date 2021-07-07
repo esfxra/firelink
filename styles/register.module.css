@@ -1,0 +1,8 @@
+.wrapper {
+  padding: 10px;
+  border: 1px solid gray;
+}
+
+.wrapper input {
+  display: block;
+}
