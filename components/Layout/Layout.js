@@ -12,9 +12,7 @@ export default function Layout({ title, children }) {
 
       <header className={styles.header}>
         <Link href="/">
-          <a>
-            <h1>campfire</h1>
-          </a>
+          <a className={styles.logo}>campfire</a>
         </Link>
 
         <div className={styles['header-links']}>

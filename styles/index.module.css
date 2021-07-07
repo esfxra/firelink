@@ -1,3 +1,8 @@
+.headline {
+  font-size: 1.75em;
+  font-weight: bold;
+}
+
 .profiles {
   display: flex;
 }
@@ -5,10 +10,14 @@
 .profile {
   margin-right: 5px;
   padding: 7.5px;
-
-  background: linear-gradient( rgb(255, 83, 83), rgb(255, 94, 0));
-  color: white;
   border-radius: 5px;
+
+  color: white;
+  background-color: #ff8906;
+}
+
+.profile:hover {
+  background-color: #e53170;
 }
 
 .profile:last-of-type {
