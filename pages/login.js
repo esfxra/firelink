@@ -1,59 +1,32 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/client';
 import Layout from '../components/Layout/Layout';
 
 /**
- * @todo Finish login implementation (waiting on authentication strategy)
- * @todo Add email as an alternative to username when logging in
+ * @todo Add at least one more auth provider
+ * @todo Consider login with email+username credentials
  */
 export default function Login() {
-  // const [email] = useState();
-  const [username, setUsername] = useState('');
-  const [password] = useState();
+  const [session, _] = useSession();
+  const router = useRouter();
 
-  async function login() {
-    const request = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    };
+  useEffect(() => {
+    // Redirect users to admin if an active session exists
+    if (session) {
+      router.push('/admin');
+    }
+  });
 
-    const res = await fetch('http://localhost:3000/api/users/', request);
-    result = res.json();
-  }
-
-  function handleUsername(event) {
-    setUsername(event.target.value);
-  }
-
-  function handlePassword(event) {
-    setPassword(event.target.value);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    login();
+  function login() {
+    signIn('github');
   }
 
   return (
     <div>
-      <Layout title="campfire - register">
+      <Layout title="campfire - login">
         <h1>login</h1>
-        <p>NOTE: Non-functioning login</p>
-        <form onSubmit={handleSubmit}>
-          <label>
-            username
-            <input type="text" onChange={handleUsername} value={username} />
-          </label>
-
-          <label>
-            password
-            <input type="password" onChange={handlePassword} value={password} />
-          </label>
-
-          <input type="submit" value="submit" />
-        </form>
+        <button onClick={login}>Continue with GitHub</button>
       </Layout>
     </div>
   );

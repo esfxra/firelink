@@ -19,7 +19,7 @@ export default function Layout({ title, children }) {
           <Link href="/login">
             <a className={styles.link}>login</a>
           </Link>
-          <Link href="/register">
+          <Link href="/login">
             <a className={styles.link}>register</a>
           </Link>
         </div>
