@@ -1,12 +1,16 @@
 .card {
+  width: 700px;
+  margin: 40px auto;
   padding: 10px;
   border-radius: 5px;
 
-  background-color: rgb(104, 151, 190);
+  background-color: #25282e;
 }
 
 .user {
   padding: 10px;
+
+  color: #ff8906;
 }
 
 .avatar{
@@ -17,5 +21,5 @@
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
-  background-color: rgb(167, 255, 226);
+  background-color: #454655;
 }
