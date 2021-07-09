@@ -1,8 +1,53 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { signOut, useSession } from 'next-auth/client';
 import styles from './Layout.module.css';
 
+/**
+ * @todo Consider splitting home, nav, and login layouts
+ */
 export default function Layout({ title, children }) {
+  const [session, _] = useSession();
+  const router = useRouter();
+
+  function SessionNav() {
+    const logOut = () => {
+      signOut({ callbackUrl: '/' });
+    };
+
+    // Handle authorized user cases
+    if (session) {
+      // Show link to admin if user is logged in, and at home path
+      if (router.pathname === '/') {
+        return (
+          <button onClick={() => router.push('/admin')} className={styles.link}>
+            go to admin
+          </button>
+        );
+      }
+
+      // Show log out button
+      return (
+        <button onClick={logOut} className={styles.link}>
+          log out
+        </button>
+      );
+    }
+
+    // Show login links for a user that is signed out
+    return (
+      <>
+        <Link href="/login">
+          <a className={styles.link}>login</a>
+        </Link>
+        <Link href="/login">
+          <a className={styles.link}>register</a>
+        </Link>
+      </>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,12 +61,7 @@ export default function Layout({ title, children }) {
         </Link>
 
         <div className={styles['header-links']}>
-          <Link href="/login">
-            <a className={styles.link}>login</a>
-          </Link>
-          <Link href="/login">
-            <a className={styles.link}>register</a>
-          </Link>
+          <SessionNav />
         </div>
       </header>
 
