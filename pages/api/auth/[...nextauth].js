@@ -19,9 +19,25 @@ export default (req, res) =>
         clientSecret: process.env.GITHUB_SECRET,
       }),
     ],
-
     database: process.env.MONGO_URI,
     pages: {
-      signIn: 'login',
+      signIn: '/login',
+    },
+    callbacks: {
+      async session(session, user) {
+        // Note: session is the JWT payload
+        if (user) {
+          session.user.id = user.id;
+        }
+
+        return session;
+      },
+      async jwt(tokenPayload, user, account, profile, isNewUser) {
+        if (tokenPayload && user) {
+          return { ...tokenPayload, id: `${user.id}` };
+        }
+
+        return tokenPayload;
+      },
     },
   });

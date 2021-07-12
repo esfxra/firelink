@@ -19,7 +19,7 @@ export default function Layout({ title, children }) {
     // Handle authorized user cases
     if (session) {
       // Show link to admin if user is logged in, and at home path
-      if (router.pathname === '/') {
+      if (router.pathname !== '/admin') {
         return (
           <button onClick={() => router.push('/admin')} className={styles.link}>
             go to admin
