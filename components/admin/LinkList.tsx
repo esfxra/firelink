@@ -16,7 +16,7 @@ export default function LinkList({ initialLinks }: Props) {
   const [session, _] = useSession();
 
   const addLink = async () => {
-    const res = await fetch('http://localhost:3000/api/link/', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/link/`, {
       method: 'POST',
       body: JSON.stringify({ url: '', title: '', createdBy: session.user.id }),
       headers: {
@@ -37,12 +37,15 @@ export default function LinkList({ initialLinks }: Props) {
   };
 
   const deleteLink = async (id: string) => {
-    const res = await fetch(`http://localhost:3000/api/link/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/link/${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     const { data } = await res.json();
     if (data.result) {
@@ -57,7 +60,7 @@ export default function LinkList({ initialLinks }: Props) {
    * will hold new state on their own until a server refresh occurs.
    */
   const editLink = async (id: string, updates: {}) => {
-    await fetch(`http://localhost:3000/api/link/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/link/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updates),
       headers: {
