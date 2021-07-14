@@ -1,0 +1,32 @@
+.field label {
+  margin-right: 10px;
+}
+
+.field input {
+  border-radius: 5px;
+}
+
+.field input:disabled {
+  color: gray;
+  background-color: rgba(68, 68, 68, 0.3);
+}
+
+.saveButton {
+  padding: 5px;
+
+  text-decoration: underline;
+  border: none;
+  color: #e53170;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.editButton {
+  padding: 5px;
+
+  text-decoration: underline;
+  border: none;
+  color: #ff8906;
+  background-color: transparent;
+  cursor: pointer;
+}

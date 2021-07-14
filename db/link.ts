@@ -26,6 +26,7 @@ const createLink = async (db: Db, link: CreateLink) => {
       ...link,
       published: false,
       createdAt: new Date().toDateString(),
+      updatedAt: new Date().toDateString(),
     })
     .then(({ ops }) => ops[0]);
 
@@ -34,7 +35,12 @@ const createLink = async (db: Db, link: CreateLink) => {
 
 const updateLink = async (db: Db, id: string, updates: UpdateLink) => {
   // updateOne does not return the doc, so we need 2 queries
-  await db.collection('links').updateOne({ _id: id }, { $set: updates });
+  await db
+    .collection('links')
+    .updateOne(
+      { _id: id },
+      { $set: { ...updates, updatedAt: new Date().toDateString() } }
+    );
 
   const updatedLink = await db.collection('links').findOne({ _id: id });
   return updatedLink;

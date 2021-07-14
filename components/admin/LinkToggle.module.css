@@ -1,0 +1,25 @@
+.toggle {
+  width: 20px;
+  height: 20px;
+
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.enabled {
+  width: inherit;
+  height: inherit;
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  background-color: #ff8906;
+}
+
+.disabled {
+  width: inherit;
+  height: inherit;
+  border-radius: 5px;
+  box-sizing: border-box;
+
+  background-color: #16151d;
+}

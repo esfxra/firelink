@@ -29,11 +29,17 @@ export default function User({ user, links }) {
           {links.length === 0 ? (
             <p>No links to see yet</p>
           ) : (
-            links.map((link) => (
-              <a href={link.url} target="_blank" key={link._id}>
-                <div className={styles.link}>{link.title}</div>
-              </a>
-            ))
+            links.map((link) => {
+              if (!link.published) {
+                return;
+              }
+
+              return (
+                <a href={link.url} target="_blank" key={link._id}>
+                  <div className={styles.link}>{link.title}</div>
+                </a>
+              );
+            })
           )}
         </div>
       </div>

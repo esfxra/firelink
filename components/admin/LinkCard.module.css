@@ -1,0 +1,35 @@
+.card {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+
+  color:  #a7a9be;
+  background-color: #22212c;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 8px;
+}
+
+.row:last-of-type {
+  margin-bottom: 0;
+}
+
+.deleteButton {
+  padding: 5px;
+
+  border-radius: 5px;
+  border: 1px solid #e53170;
+  color: #e53170;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.icon {
+  height: 0.75em;
+  margin-right: 5px;
+}

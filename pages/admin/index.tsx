@@ -4,22 +4,17 @@ import { useState } from 'react';
 import { connectToDB } from '../../db/connect';
 import { getLinksByUser } from '../../db/link';
 import Layout from '../../components/Layout/Layout';
+import LinkCard from '../../components/admin/LinkCard';
 import styles from '../../styles/admin.module.css';
 
-export default function Admin({ links }) {
-  const [session, loading] = useSession();
-  const [allLinks, setAllLinks] = useState(links || []);
-
-  /**
-   * @todo Refactor editor into its own component
-   */
+const NewLink = ({ userId, setAllLinks }) => {
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
 
   const addLink = async () => {
     const res = await fetch('http://localhost:3000/api/link/', {
       method: 'POST',
-      body: JSON.stringify({ url, title, createdBy: session.user.id }),
+      body: JSON.stringify({ url, title, createdBy: userId }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -41,7 +36,66 @@ export default function Admin({ links }) {
     setAllLinks((state) => [...state, data]);
   };
 
-  const removeLink = async (id, link_idx) => {
+  return (
+    <div className={styles.newLink}>
+      <div className={styles.newLinkForm}>
+        <div className={styles.newLinkField}>
+          <label>title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className={styles.newLinkField}>
+          <label>url</label>
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <button className={styles.newLinkButton} onClick={addLink}>
+        add new link
+      </button>
+    </div>
+  );
+};
+
+const Admin = ({ links }) => {
+  const [session, loading] = useSession();
+  const [allLinks, setAllLinks] = useState(links || []);
+
+  const editLink = async (id, updates) => {
+    console.log('attempting to save');
+    console.log(updates);
+    const res = await fetch(`http://localhost:3000/api/link/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const { data } = await res.json();
+    console.log(data);
+
+    // Update links array
+    setAllLinks((state) =>
+      state.map((link: any) => {
+        if (link._id === id) {
+          return { ...data };
+        }
+
+        return link;
+      })
+    );
+  };
+
+  const deleteLink = async (id, idxRemove) => {
     const res = await fetch(`http://localhost:3000/api/link/${id}`, {
       method: 'DELETE',
       headers: {
@@ -51,11 +105,9 @@ export default function Admin({ links }) {
 
     const { data } = await res.json();
     if (data.result) {
-      setAllLinks((state) => state.filter((_, idx) => idx !== link_idx));
+      setAllLinks((state) => state.filter((_, idx) => idx !== idxRemove));
     }
   };
-
-  // const editLink = async () => {};
 
   // Do not show anything while we wait for the session
   if (loading) {
@@ -86,43 +138,40 @@ export default function Admin({ links }) {
       <section>
         <h2 className={styles.subheadline}>links</h2>
 
-        {allLinks.map((link, idx) => (
-          <div key={link._id}>
-            <a href={link.url} target="_blank">
-              {link.title}
-            </a>
-            <button onClick={() => removeLink(link._id, idx)}>delete</button>
-            {/* <button onClick={() => editLink()}>edit</button> */}
-          </div>
-        ))}
+        <NewLink userId={session.user.id} setAllLinks={setAllLinks} />
 
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <button onClick={addLink}>add new link</button>
+        {allLinks.map((link, idx) => {
+          const editWrapper = (updates) => {
+            editLink(link._id, updates);
+          };
+
+          return (
+            <LinkCard
+              key={link._id}
+              url={link.url}
+              title={link.title}
+              published={link.published}
+              editLink={editWrapper}
+              deleteLink={() => deleteLink(link._id, idx)}
+            />
+          );
+        })}
       </section>
 
-      <section>
+      {/* <section>
         <h2 className={styles.subheadline}>appearance</h2>
-      </section>
+      </section> */}
 
-      <section>
+      {/* <section>
         <h2 className={styles.subheadline}>account settings</h2>
-      </section>
+      </section> */}
     </Layout>
   );
-}
+};
 
 export async function getServerSideProps(context) {
   // Fetch from the server initially, then handle mutations on the client
-  const session = await getSession(context);
+  const session: any = await getSession(context);
 
   // DB calls require session data, so stop here if this is not available
   if (!session) {
@@ -134,8 +183,6 @@ export async function getServerSideProps(context) {
   const { db } = await connectToDB();
   const links = await getLinksByUser(db, session.user.id);
 
-  console.log(links);
-
   /**
    * The session obtained from the context will be available in pageProps
    * These then are passed to the next-auth Provider for the client
@@ -146,3 +193,5 @@ export async function getServerSideProps(context) {
     props: { session, links },
   };
 }
+
+export default Admin;
