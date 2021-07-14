@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { connectToDB } from '../db/connect';
-import { getUserById, getUsers } from '../db/user';
+import { getUserById } from '../db/user';
 import { getLinksByUser } from '../db/link';
 import Layout from '../components/Layout/Layout';
 import styles from '../styles/user.module.css';
@@ -47,26 +47,12 @@ export default function User({ user, links }) {
   );
 }
 
-export async function getStaticPaths() {
-  const { db } = await connectToDB();
-  const users = await getUsers(db);
-  const paths = users.map((user) => {
-    return {
-      params: { id: user._id },
-      // params: { id: user.username },
-    };
-  });
+export async function getServerSideProps(context) {
+  const { id } = context.query;
 
-  return {
-    paths,
-    fallback: false,
-  };
-}
-
-export async function getStaticProps({ params }) {
   const { db } = await connectToDB();
-  const user = await getUserById(db, params.id);
-  const links = await getLinksByUser(db, params.id);
+  const user = await getUserById(db, id);
+  const links = await getLinksByUser(db, id);
 
   return {
     props: {
