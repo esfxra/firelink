@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import styles from './TextField.module.css';
 
 interface Props {
+  label: string;
   initialValue: string;
   saveValue: ({}) => void;
 }
@@ -11,7 +12,7 @@ interface Props {
  * This could potentially lead to unwanted mutations. A visual indicator would be needed.
  * Some throttling to when saves occur, or additional conditions could also be helpful.
  */
-export default function TextField({ initialValue, saveValue }: Props) {
+export default function TextField({ label, initialValue, saveValue }: Props) {
   const [value, setValue] = useState(initialValue);
   const [enabled, setEnabled] = useState(false);
   const inputRef = useRef(null);
@@ -37,7 +38,7 @@ export default function TextField({ initialValue, saveValue }: Props) {
 
   return (
     <div className={styles.field}>
-      <label>url</label>
+      <label>{label}</label>
       <input
         type="text"
         value={value}

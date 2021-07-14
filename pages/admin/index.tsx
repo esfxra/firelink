@@ -1,113 +1,17 @@
 import Link from 'next/link';
 import { getSession, useSession } from 'next-auth/client';
-import { useState } from 'react';
 import { connectToDB } from '../../db/connect';
 import { getLinksByUser } from '../../db/link';
+import LinkList from '../../components/admin/LinkList';
 import Layout from '../../components/Layout/Layout';
-import LinkCard from '../../components/admin/LinkCard';
 import styles from '../../styles/admin.module.css';
 
-const NewLink = ({ userId, setAllLinks }) => {
-  const [url, setUrl] = useState('');
-  const [title, setTitle] = useState('');
+interface Props {
+  links: any[];
+}
 
-  const addLink = async () => {
-    const res = await fetch('http://localhost:3000/api/link/', {
-      method: 'POST',
-      body: JSON.stringify({ url, title, createdBy: userId }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const { data } = await res.json();
-    console.log(data);
-
-    // Reset fields for new link
-    setUrl('');
-    setTitle('');
-
-    /**
-     * Reset all links
-     * @note This merges the previous state with the new one;
-     * technically merging initial server props state with client state.
-     * When the browser is refreshed, server state should include the changes from the mutation.
-     */
-    setAllLinks((state) => [...state, data]);
-  };
-
-  return (
-    <div className={styles.newLink}>
-      <div className={styles.newLinkForm}>
-        <div className={styles.newLinkField}>
-          <label>title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-
-        <div className={styles.newLinkField}>
-          <label>url</label>
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <button className={styles.newLinkButton} onClick={addLink}>
-        add new link
-      </button>
-    </div>
-  );
-};
-
-const Admin = ({ links }) => {
+export default function Admin({ links }: Props) {
   const [session, loading] = useSession();
-  const [allLinks, setAllLinks] = useState(links || []);
-
-  const editLink = async (id, updates) => {
-    console.log('attempting to save');
-    console.log(updates);
-    const res = await fetch(`http://localhost:3000/api/link/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updates),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const { data } = await res.json();
-    console.log(data);
-
-    // Update links array
-    setAllLinks((state) =>
-      state.map((link: any) => {
-        if (link._id === id) {
-          return { ...data };
-        }
-
-        return link;
-      })
-    );
-  };
-
-  const deleteLink = async (id, idxRemove) => {
-    const res = await fetch(`http://localhost:3000/api/link/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const { data } = await res.json();
-    if (data.result) {
-      setAllLinks((state) => state.filter((_, idx) => idx !== idxRemove));
-    }
-  };
 
   // Do not show anything while we wait for the session
   if (loading) {
@@ -137,25 +41,7 @@ const Admin = ({ links }) => {
 
       <section>
         <h2 className={styles.subheadline}>links</h2>
-
-        <NewLink userId={session.user.id} setAllLinks={setAllLinks} />
-
-        {allLinks.map((link, idx) => {
-          const editWrapper = (updates) => {
-            editLink(link._id, updates);
-          };
-
-          return (
-            <LinkCard
-              key={link._id}
-              url={link.url}
-              title={link.title}
-              published={link.published}
-              editLink={editWrapper}
-              deleteLink={() => deleteLink(link._id, idx)}
-            />
-          );
-        })}
+        <LinkList initialLinks={links} />
       </section>
 
       {/* <section>
@@ -167,7 +53,7 @@ const Admin = ({ links }) => {
       </section> */}
     </Layout>
   );
-};
+}
 
 export async function getServerSideProps(context) {
   // Fetch from the server initially, then handle mutations on the client
@@ -193,5 +79,3 @@ export async function getServerSideProps(context) {
     props: { session, links },
   };
 }
-
-export default Admin;

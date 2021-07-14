@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './LinkToggle.module.css';
 
 interface Props {
@@ -7,14 +7,17 @@ interface Props {
 }
 
 export default function LinkToggle({ published, saveValue }: Props) {
+  const [toggle, setToggle] = useState(published);
+
   const handleToggle = () => {
-    saveValue({ value: !published });
+    saveValue({ value: !toggle });
+    setToggle((state) => !state);
   };
 
   return (
     <div className={styles.toggle}>
       <div
-        className={published ? styles.enabled : styles.disabled}
+        className={toggle ? styles.enabled : styles.disabled}
         onClick={handleToggle}
       ></div>
     </div>

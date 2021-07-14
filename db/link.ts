@@ -14,8 +14,13 @@ interface UpdateLink extends Link {
   published: boolean;
 }
 
+/**
+ * @todo Use a sort query instead of reversing the array once received
+ */
 const getLinksByUser = async (db: Db, userId: string) => {
-  return db.collection('links').find({ createdBy: userId }).toArray();
+  return (
+    await db.collection('links').find({ createdBy: userId }).toArray()
+  ).reverse();
 };
 
 const createLink = async (db: Db, link: CreateLink) => {
