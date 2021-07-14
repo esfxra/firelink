@@ -38,11 +38,8 @@ export default function Layout({ title, children }) {
     // Show login links for a user that is signed out
     return (
       <>
-        <Link href="/login">
-          <a className={styles.link}>login</a>
-        </Link>
-        <Link href="/login">
-          <a className={styles.link}>register</a>
+        <Link href="/access">
+          <a className={styles.link}>access</a>
         </Link>
       </>
     );

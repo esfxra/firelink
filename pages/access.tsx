@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/client';
 import Layout from '../components/Layout/Layout';
+import styles from '../styles/access.module.css';
 
 /**
  * @todo Add at least one more auth provider
@@ -18,15 +19,17 @@ export default function Login() {
     }
   });
 
-  function login() {
+  function handleGitHub() {
     signIn('github');
   }
 
   return (
     <div>
       <Layout title="campfire - login">
-        <h1>login</h1>
-        <button onClick={login}>Continue with GitHub</button>
+        <h1>login or register</h1>
+        <button className={styles.gitHubButton} onClick={handleGitHub}>
+          Continue with GitHub
+        </button>
       </Layout>
     </div>
   );

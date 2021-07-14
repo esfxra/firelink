@@ -1,17 +1,40 @@
 import Link from 'next/link';
 import { getSession, useSession } from 'next-auth/client';
+import { useEffect, useState } from 'react';
 import { connectToDB } from '../../db/connect';
-import { getLinksByUser } from '../../db/link';
+import { getUserById } from '../../db/user';
+import { getLinksByUserID } from '../../db/link';
+import CreateUsernameModal from '../../components/admin/CreateUsernameModal';
 import LinkList from '../../components/admin/LinkList';
 import Layout from '../../components/Layout/Layout';
 import styles from '../../styles/admin.module.css';
 
 interface Props {
+  user: {
+    name: string;
+    username: string;
+  };
   links: any[];
 }
 
-export default function Admin({ links }: Props) {
+/**
+ * @todo Improve the username modal logic.
+ * Consider showing it as a page even before admin.
+ * This could be handled through one of the authentication callbacks.
+ * The jwt callback can tell if a new user was created.
+ */
+export default function Admin({ user, links }: Props) {
   const [session, loading] = useSession();
+  const [usernameModal, setUsernameModal] = useState(false);
+
+  useEffect(() => {
+    if (user.username === '') {
+      setUsernameModal(true);
+      return;
+    }
+
+    setUsernameModal(false);
+  }, []);
 
   // Do not show anything while we wait for the session
   if (loading) {
@@ -23,7 +46,7 @@ export default function Admin({ links }: Props) {
     return (
       <div>
         Try to{' '}
-        <Link href="/login">
+        <Link href="/access">
           <a style={{ color: '#ff8906', textDecoration: 'underline' }}>
             log in again
           </a>
@@ -34,10 +57,19 @@ export default function Admin({ links }: Props) {
   }
 
   // Actual admin page components
+  if (usernameModal) {
+    return (
+      <CreateUsernameModal
+        id={session.user.id}
+        closeModal={() => setUsernameModal(false)}
+      />
+    );
+  }
+
   return (
     <Layout title="campfire">
       <h1 className={styles.headline}>admin</h1>
-      <p>welcome, {session.user.name}</p>
+      <p>welcome, {user.name}</p>
 
       <section>
         <h2 className={styles.subheadline}>links</h2>
@@ -67,7 +99,8 @@ export async function getServerSideProps(context) {
   }
 
   const { db } = await connectToDB();
-  const links = await getLinksByUser(db, session.user.id);
+  const user = await getUserById(db, session.user.id);
+  const links = await getLinksByUserID(db, session.user.id);
 
   /**
    * The session obtained from the context will be available in pageProps
@@ -76,6 +109,6 @@ export async function getServerSideProps(context) {
    * See the setup in _app.js
    */
   return {
-    props: { session, links },
+    props: { session, user, links },
   };
 }

@@ -1,0 +1,11 @@
+.gitHubButton {
+  padding: 15px;
+  border-width: 0;
+  border-radius: 5px;
+
+  font-size: 1.2em;
+
+  color: white;
+  background-color: #24292e;
+  cursor: pointer;
+}

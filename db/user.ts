@@ -1,21 +1,40 @@
 import { Db, ObjectID } from 'mongodb';
 
-const getUsers = async (db: Db) => {
+const convertToSerializable = (user: any) => {
+  return {
+    _id: user._id.toString(),
+    username: user.username,
+    name: user.name,
+    image: user.image,
+  };
+};
+
+export async function getUsers(db: Db) {
   const users = await db.collection('users').find().toArray();
 
   return users.map((user) => {
-    return {
-      _id: user._id.toString(),
-      name: user.name,
-      image: user.image,
-    };
+    return convertToSerializable(user);
   });
-};
+}
 
-const getUserById = async (db: Db, id: string) => {
-  return db
+export async function getUserById(db: Db, id: string) {
+  const user = await db
     .collection('users')
     .findOne({ _id: ObjectID.createFromHexString(id) });
-};
 
-export { getUsers, getUserById };
+  return convertToSerializable(user);
+}
+
+export async function getUserByUsername(db: Db, username: string) {
+  const user = await db.collection('users').findOne({ username: username });
+  return convertToSerializable(user);
+}
+
+export async function updateUsername(db: Db, id: string, username: string) {
+  await db
+    .collection('users')
+    .updateOne(
+      { _id: ObjectID.createFromHexString(id) },
+      { $set: { ...{ username }, updatedAt: new Date().toDateString() } }
+    );
+}

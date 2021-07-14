@@ -11,8 +11,8 @@ export default function Home({ users }) {
       <div className={styles.profiles}>
         {users.map((user) => {
           return (
-            <Link href={`/${user._id}`} key={user._id}>
-              <a className={styles.profile}>@{user._id}</a>
+            <Link href={`/${user.username}`} key={user.username}>
+              <a className={styles.profile}>@{user.username}</a>
             </Link>
           );
         })}
@@ -26,6 +26,6 @@ export async function getStaticProps() {
   const users = await getUsers(db);
 
   return {
-    props: { users }, // will be passed to the page component as props
+    props: { users },
   };
 }

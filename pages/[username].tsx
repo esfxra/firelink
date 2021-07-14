@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { connectToDB } from '../db/connect';
-import { getUserById } from '../db/user';
-import { getLinksByUser } from '../db/link';
+import { getUserByUsername } from '../db/user';
+import { getLinksByUserID } from '../db/link';
 import Layout from '../components/Layout/Layout';
 import styles from '../styles/user.module.css';
 
@@ -19,7 +19,7 @@ export default function User({ user, links }) {
             />
           )}
 
-          <div className={styles.name}>{user.name}</div>
+          <div className={styles.name}>@{user.username}</div>
           {/* <div className={styles.name}>{user.displayname}</div> */}
           {/* <div className={styles.name}>@{user.username}</div> */}
           {/* <div className={styles.bio}>{user.bio}</div> */}
@@ -47,19 +47,16 @@ export default function User({ user, links }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const { id } = context.query;
+export async function getServerSideProps(context: any) {
+  const { username } = context.query;
 
   const { db } = await connectToDB();
-  const user = await getUserById(db, id);
-  const links = await getLinksByUser(db, id);
+  const user = await getUserByUsername(db, username);
+  const links = await getLinksByUserID(db, user._id);
 
   return {
     props: {
-      user: {
-        name: user.name,
-        image: user.image,
-      },
+      user,
       links,
     },
   };
