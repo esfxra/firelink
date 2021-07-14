@@ -1,5 +1,7 @@
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
+import Adapters from 'next-auth/adapters';
+import Models from '../../../models';
 
 /**
  * @todo Add more providers, and consider standard username-password credentials
@@ -19,7 +21,11 @@ export default (req, res) =>
         clientSecret: process.env.GITHUB_SECRET,
       }),
     ],
-    database: process.env.MONGO_URI,
+    adapter: Adapters.TypeORM.Adapter(process.env.MONGO_URI, {
+      models: {
+        User: Models.User,
+      },
+    }),
     pages: {
       signIn: '/login',
     },
