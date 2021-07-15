@@ -1,24 +1,7 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  
-  width: 80%;
-  height: 100vh;
-  margin: 0 auto;
-  padding: 25px;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.header-links {
-  display: flex;
-  justify-content: space-between;
-
-  width: 150px;
 }
 
 .logo {
@@ -34,10 +17,27 @@
   font-size: 1.2em;
 
   text-decoration: underline;
-
   color: #ff8906;  
+  cursor: pointer;
 }
 
 .link:hover {
   color: #e53170
+}
+
+.buttonLink {
+  margin-left: 15px;
+  padding: 5px 10px;
+
+  border-width: 0;
+  border-radius: 5px;
+
+  font-size: 1.2em;
+  color: white;
+  background-color: #e53170;
+  cursor: pointer;
+}
+
+.buttonLink:hover {
+  background-color: #dd497d
 }

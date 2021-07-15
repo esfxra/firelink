@@ -2,14 +2,14 @@ import Image from 'next/image';
 import { connectToDB } from '../db/connect';
 import { getUserByUsername } from '../db/user';
 import { getLinksByUserID } from '../db/link';
-import Layout from '../components/Layout/Layout';
+import ProfileLayout from '../components/ProfileLayout';
 import styles from '../styles/user.module.css';
 
 export default function User({ user, links }) {
   return (
-    <Layout title={`campfire - ${user.name}`}>
+    <ProfileLayout title={`campfire - ${user.name}`}>
       <div className={styles.card}>
-        <div className={styles.user}>
+        <div className={styles.userDetails}>
           {user.image && (
             <Image
               src={user.image}
@@ -20,9 +20,6 @@ export default function User({ user, links }) {
           )}
 
           <div className={styles.name}>@{user.username}</div>
-          {/* <div className={styles.name}>{user.displayname}</div> */}
-          {/* <div className={styles.name}>@{user.username}</div> */}
-          {/* <div className={styles.bio}>{user.bio}</div> */}
         </div>
 
         <div className={styles.links}>
@@ -43,14 +40,14 @@ export default function User({ user, links }) {
           )}
         </div>
       </div>
-    </Layout>
+    </ProfileLayout>
   );
 }
 
 export async function getServerSideProps(context: any) {
   const { username } = context.query;
-
   const { db } = await connectToDB();
+
   const user = await getUserByUsername(db, username);
   const links = await getLinksByUserID(db, user._id);
 

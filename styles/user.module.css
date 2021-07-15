@@ -1,16 +1,19 @@
 .card {
-  width: 700px;
-  margin: 40px auto;
   padding: 10px;
   border-radius: 5px;
 
   background-color: #25282e;
 }
 
-.user {
+.userDetails {
+  text-align: center;
   padding: 10px;
 
   color: #ff8906;
+}
+
+.name {
+  padding-top: 5px;
 }
 
 .avatar{
@@ -22,4 +25,8 @@
   padding: 10px;
   border-radius: 10px;
   background-color: #454655;
+}
+
+.link:hover {
+  background-color: #50505a;
 }

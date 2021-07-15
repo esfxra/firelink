@@ -1,0 +1,43 @@
+.container {  
+  width: 90%;
+  margin: 5vw auto;
+}
+
+.footer {
+  width: 90%;
+  margin: 2.5vw auto;
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+}
+
+@media (min-width: 800px) {
+  .container {  
+    width: 700px;
+    margin: 5vw auto;
+  }
+
+  .footer {
+    width: 700px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {  
+    width: 1000px;
+    margin: 5vw auto;
+  }
+
+  .footer {
+    width: 1000px;
+  }
+}
+
+.logo {
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.logo:hover {
+  color: #ff8906;
+}

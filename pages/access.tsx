@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/client';
-import Layout from '../components/Layout/Layout';
+import Layout from '../components/Layout';
 import styles from '../styles/access.module.css';
 
 /**
@@ -24,13 +24,11 @@ export default function Login() {
   }
 
   return (
-    <div>
-      <Layout title="campfire - login">
-        <h1>login or register</h1>
-        <button className={styles.gitHubButton} onClick={handleGitHub}>
-          Continue with GitHub
-        </button>
-      </Layout>
-    </div>
+    <Layout title="campfire - login">
+      <h1>login or register</h1>
+      <button className={styles.gitHubButton} onClick={handleGitHub}>
+        Continue with GitHub
+      </button>
+    </Layout>
   );
 }

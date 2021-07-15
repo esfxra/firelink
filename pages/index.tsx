@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { connectToDB } from '../db/connect';
 import { getUsers } from '../db/user';
-import Layout from '../components/Layout/Layout';
+import Layout from '../components/Layout';
 import styles from '../styles/index.module.css';
 
 export default function Home({ users }) {
@@ -9,7 +9,7 @@ export default function Home({ users }) {
     <Layout title="campfire">
       <h1 className={styles.headline}>discover profiles</h1>
       <div className={styles.profiles}>
-        {users.map((user) => {
+        {users.map((user: any) => {
           return (
             <Link href={`/${user.username}`} key={user.username}>
               <a className={styles.profile}>@{user.username}</a>

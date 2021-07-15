@@ -6,7 +6,7 @@ import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
 import CreateUsernameModal from '../../components/admin/CreateUsernameModal';
 import LinkList from '../../components/admin/LinkList';
-import Layout from '../../components/Layout/Layout';
+import Layout from '../../components/Layout';
 import styles from '../../styles/admin.module.css';
 
 interface Props {
