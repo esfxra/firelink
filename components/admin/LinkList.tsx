@@ -5,13 +5,14 @@ import styles from './LinkList.module.css';
 
 interface Props {
   initialLinks: any[];
+  onChange: () => void;
 }
 
 /**
  * @todo Convert this component to a page once appearance and account settings
  * are added to admin.
  */
-export default function LinkList({ initialLinks }: Props) {
+export default function LinkList({ initialLinks, onChange }: Props) {
   const [links, setLinks] = useState(initialLinks);
   const [session, _] = useSession();
 
@@ -34,6 +35,7 @@ export default function LinkList({ initialLinks }: Props) {
      * @note Merging in such a way so that the new link is at the top of the array.
      */
     setLinks((state) => [{ ...data }, ...state]);
+    onChange();
   };
 
   const deleteLink = async (id: string) => {
@@ -51,6 +53,8 @@ export default function LinkList({ initialLinks }: Props) {
     if (data.result) {
       setLinks((state) => state.filter((link) => link._id !== id));
     }
+
+    onChange();
   };
 
   /**
@@ -69,6 +73,7 @@ export default function LinkList({ initialLinks }: Props) {
     });
 
     // const { data } = await res.json();
+    onChange();
   };
 
   const linkList = links.map((link) => (

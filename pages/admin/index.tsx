@@ -1,6 +1,6 @@
 import { getSession, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-// import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
@@ -27,7 +27,11 @@ interface Props {
 export default function Admin({ user, links }: Props) {
   const [session, loading] = useSession();
   const router = useRouter();
-  // const [usernameModal, setUsernameModal] = useState(false);
+  const [checksum, setChecksum] = useState(0);
+
+  const updatePreview = () => {
+    setChecksum((checksum) => checksum + 1);
+  };
 
   // useEffect(() => {
   //   if (user) {
@@ -74,10 +78,27 @@ export default function Admin({ user, links }: Props) {
 
   return (
     <Layout title="campfire | admin">
-      <section>
-        <h1 className={styles.subheadline}>Links</h1>
-        <LinkList initialLinks={links} />
-      </section>
+      <div className={styles.admin}>
+        {/* Links editor */}
+        <section className={styles.editor}>
+          <h1 className={styles.headline}>Links</h1>
+          <LinkList initialLinks={links} onChange={updatePreview} />
+        </section>
+
+        {/* User profile page preview */}
+        <section className={styles.preview}>
+          <h1 className={styles.headline}>Preview</h1>
+          <div className={styles.previewWrapper}>
+            <div className={styles.deviceFrame}>
+              <iframe
+                key={checksum}
+                className={styles.iframe}
+                src={`${process.env.NEXT_PUBLIC_API_HOST}/${user.username}`}
+              ></iframe>
+            </div>
+          </div>
+        </section>
+      </div>
 
       {/* <section>
         <h2 className={styles.subheadline}>appearance</h2>
