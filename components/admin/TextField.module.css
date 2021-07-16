@@ -1,32 +1,51 @@
+.field {
+  width: 90%;
+  display: grid;
+  grid-template-columns: 45px 1fr auto;
+  gap: 10px
+}
+
 .field label {
-  margin-right: 10px;
+  font-size: 0.7em;
+  text-align: right;
+  align-self: center;
 }
 
 .field input {
+  padding: 10px;
+  border-width: 0;
   border-radius: 5px;
+  color: var(--main-foreground);
 }
 
 .field input:disabled {
   color: gray;
-  background-color: rgba(68, 68, 68, 0.3);
+  border-width: 0;
+  background-color: var(--disabled);
 }
 
-.saveButton {
-  padding: 5px;
-
+.save {
+  padding: 0;
   text-decoration: underline;
   border: none;
-  color: #e53170;
+  color: var(--accent);
   background-color: transparent;
   cursor: pointer;
 }
 
-.editButton {
-  padding: 5px;
+.save:hover {
+  color: var(--accent-lighter)
+}
 
+.edit {
+  padding: 0;
   text-decoration: underline;
   border: none;
-  color: #ff8906;
+  color: var(--accent-alt);
   background-color: transparent;
   cursor: pointer;
+}
+
+.edit:hover {
+  color: var(--accent-alt-lighter);
 }

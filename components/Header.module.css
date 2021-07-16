@@ -10,34 +10,34 @@
 }
 
 .logo:hover {
-  color: #ff8906;
+  color: var(--accent);
 }
 
 .link {
   font-size: 1.2em;
 
   text-decoration: underline;
-  color: #ff8906;  
+  color: var(--accent);  
   cursor: pointer;
 }
 
 .link:hover {
-  color: #e53170
+  color: var(--accent-lighter)
 }
 
-.buttonLink {
+.button {
   margin-left: 15px;
-  padding: 5px 10px;
+  padding: 5px 15px;
 
   border-width: 0;
   border-radius: 5px;
 
   font-size: 1.2em;
-  color: white;
-  background-color: #e53170;
+  color: var(--button-text);
+  background-color: var(--button-background);
   cursor: pointer;
 }
 
-.buttonLink:hover {
-  background-color: #dd497d
+.button:hover {
+  background-color: var(--button-background-hover)
 }

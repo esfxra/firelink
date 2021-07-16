@@ -7,38 +7,36 @@ import styles from '../styles/user.module.css';
 
 export default function User({ user, links }) {
   return (
-    <ProfileLayout title={`campfire - ${user.name}`}>
-      <div className={styles.card}>
-        <div className={styles.userDetails}>
-          {user.image && (
-            <Image
-              src={user.image}
-              width={100}
-              height={100}
-              className={styles.avatar}
-            />
-          )}
+    <ProfileLayout title={`@${user.username} | campfire`}>
+      <div className={styles.userDetails}>
+        {user.image && (
+          <Image
+            src={user.image}
+            width={100}
+            height={100}
+            className={styles.avatar}
+          />
+        )}
 
-          <div className={styles.name}>@{user.username}</div>
-        </div>
+        <div className={styles.name}>@{user.username}</div>
+      </div>
 
-        <div className={styles.links}>
-          {links.length === 0 ? (
-            <p>No links to see yet</p>
-          ) : (
-            links.map((link) => {
-              if (!link.published) {
-                return;
-              }
+      <div className={styles.links}>
+        {links.length === 0 ? (
+          <p>No links to see yet</p>
+        ) : (
+          links.map((link) => {
+            if (!link.published) {
+              return;
+            }
 
-              return (
-                <a href={link.url} target="_blank" key={link._id}>
-                  <div className={styles.link}>{link.title}</div>
-                </a>
-              );
-            })
-          )}
-        </div>
+            return (
+              <a href={link.url} target="_blank" key={link._id}>
+                <div className={styles.link}>{link.title}</div>
+              </a>
+            );
+          })
+        )}
       </div>
     </ProfileLayout>
   );

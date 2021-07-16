@@ -1,21 +1,21 @@
 .card {
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
   border-radius: 5px;
 
-  color:  #a7a9be;
-  background-color: #22212c;
+  background-color: var(--elevation-background);
+  box-shadow: var(--elevation-shadow);
 }
 
-.row {
+.flexRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  margin-bottom: 8px;
+  margin-bottom: 15px;
 }
 
-.row:last-of-type {
+.flexRow:last-of-type {
   margin-bottom: 0;
 }
 
@@ -23,8 +23,8 @@
   padding: 5px;
 
   border-radius: 5px;
-  border: 1px solid #e53170;
-  color: #e53170;
+  border: 1px solid var(--accent);
+  color: var(--accent);
   background-color: transparent;
   cursor: pointer;
 }

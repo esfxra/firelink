@@ -13,11 +13,11 @@
   border-radius: 5px;
 
   color: white;
-  background-color: #ff8906;
+  background-color: var(--button-background);
 }
 
 .profile:hover {
-  background-color: #e53170;
+  background-color: var(--button-background-hover);
 }
 
 .profile:last-of-type {

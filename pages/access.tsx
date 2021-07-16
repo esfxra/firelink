@@ -24,7 +24,7 @@ export default function Login() {
   }
 
   return (
-    <Layout title="campfire - login">
+    <Layout title="campfire | access">
       <h1>login or register</h1>
       <button className={styles.gitHubButton} onClick={handleGitHub}>
         Continue with GitHub

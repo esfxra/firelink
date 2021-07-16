@@ -34,21 +34,21 @@ export default function LinkCard({
 
   return (
     <div className={styles.card}>
-      <div className={styles.row}>
+      <div className={styles.flexRow}>
         {/* Title text field */}
-        <TextField label="title" initialValue={title} saveValue={saveTitle} />
+        <TextField label="TITLE" initialValue={title} saveValue={saveTitle} />
 
         {/* Enable */}
         <LinkToggle published={published} saveValue={savePublished} />
       </div>
 
-      <div className={styles.row}>
+      <div className={styles.flexRow}>
         {/* URL text field */}
-        <TextField label="url" initialValue={url} saveValue={saveURL} />
+        <TextField label="URL" initialValue={url} saveValue={saveURL} />
 
         {/* Delete */}
         <button className={styles.deleteButton} onClick={() => deleteLink(id)}>
-          delete
+          DELETE
         </button>
       </div>
     </div>

@@ -12,7 +12,7 @@
   border-radius: 5px;
   box-sizing: border-box;
 
-  background-color: #ff8906;
+  background-color: var(--accent-alt);
 }
 
 .disabled {
@@ -21,5 +21,5 @@
   border-radius: 5px;
   box-sizing: border-box;
 
-  background-color: #16151d;
+  background-color: var(--disabled);
 }

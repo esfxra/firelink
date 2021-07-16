@@ -1,15 +1,8 @@
-.card {
-  padding: 10px;
-  border-radius: 5px;
-
-  background-color: #25282e;
-}
-
 .userDetails {
   text-align: center;
   padding: 10px;
 
-  color: #ff8906;
+  color: var(--accent);
 }
 
 .name {
@@ -24,9 +17,10 @@
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
-  background-color: #454655;
+  color: var(--button-text);
+  background-color: var(--accent);
 }
 
 .link:hover {
-  background-color: #50505a;
+  background-color: var(--accent-lighter);
 }

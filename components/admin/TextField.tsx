@@ -48,13 +48,13 @@ export default function TextField({ label, initialValue, saveValue }: Props) {
       />
 
       {enabled && (
-        <button className={styles.saveButton} onClick={handleSave}>
-          save
+        <button className={styles.save} onClick={handleSave}>
+          SAVE
         </button>
       )}
       {!enabled && (
-        <button className={styles.editButton} onClick={handleEdit}>
-          edit
+        <button className={styles.edit} onClick={handleEdit}>
+          EDIT
         </button>
       )}
     </div>

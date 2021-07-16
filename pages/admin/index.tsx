@@ -1,10 +1,11 @@
-import Link from 'next/link';
 import { getSession, useSession } from 'next-auth/client';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+// import { useEffect, useState } from 'react';
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
-import CreateUsernameModal from '../../components/admin/CreateUsernameModal';
+import PromptLayout from '../../components/admin/PromptLayout';
+// import CreateUsernameModal from '../../components/admin/CreateUsernameModal';
 import LinkList from '../../components/admin/LinkList';
 import Layout from '../../components/Layout';
 import styles from '../../styles/admin.module.css';
@@ -13,8 +14,8 @@ interface Props {
   user: {
     name: string;
     username: string;
-  };
-  links: any[];
+  } | null;
+  links: any[] | null;
 }
 
 /**
@@ -25,16 +26,19 @@ interface Props {
  */
 export default function Admin({ user, links }: Props) {
   const [session, loading] = useSession();
-  const [usernameModal, setUsernameModal] = useState(false);
+  const router = useRouter();
+  // const [usernameModal, setUsernameModal] = useState(false);
 
-  useEffect(() => {
-    if (user.username === '') {
-      setUsernameModal(true);
-      return;
-    }
+  // useEffect(() => {
+  //   if (user) {
+  //     if (user.username === '') {
+  //       setUsernameModal(true);
+  //       return;
+  //     }
+  //   }
 
-    setUsernameModal(false);
-  }, []);
+  //   setUsernameModal(false);
+  // }, []);
 
   // Do not show anything while we wait for the session
   if (loading) {
@@ -44,35 +48,34 @@ export default function Admin({ user, links }: Props) {
   // Refer the user to signing in again since they are not authorized
   if (!loading && !session) {
     return (
-      <div>
-        Try to{' '}
-        <Link href="/access">
-          <a style={{ color: '#ff8906', textDecoration: 'underline' }}>
-            log in again
-          </a>
-        </Link>
-        .
-      </div>
+      <PromptLayout>
+        <p>You are not authenticated.</p>
+        {/* <Link href="/access"> */}
+        <button
+          className={styles.button}
+          onClick={() => router.push('/access')}
+        >
+          Log in
+        </button>
+        {/* </Link> */}
+      </PromptLayout>
     );
   }
 
-  // Actual admin page components
-  if (usernameModal) {
-    return (
-      <CreateUsernameModal
-        id={session.user.id}
-        closeModal={() => setUsernameModal(false)}
-      />
-    );
-  }
+  // // Actual admin page components
+  // if (user) {
+  //   if (user.username !== '') {
+  //     <CreateUsernameModal
+  //       id={session.user.id}
+  //       closeModal={() => setUsernameModal(false)}
+  //     />;
+  //   }
+  // }
 
   return (
-    <Layout title="campfire">
-      <h1 className={styles.headline}>admin</h1>
-      <p>welcome, {user.name}</p>
-
+    <Layout title="campfire | admin">
       <section>
-        <h2 className={styles.subheadline}>links</h2>
+        <h1 className={styles.subheadline}>Links</h1>
         <LinkList initialLinks={links} />
       </section>
 
@@ -94,7 +97,7 @@ export async function getServerSideProps(context) {
   // DB calls require session data, so stop here if this is not available
   if (!session) {
     return {
-      props: { session },
+      props: { session, user: null, links: null },
     };
   }
 

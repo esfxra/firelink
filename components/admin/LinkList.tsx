@@ -84,11 +84,11 @@ export default function LinkList({ initialLinks }: Props) {
   ));
 
   return (
-    <>
-      <button className={styles.newLink} onClick={addLink}>
-        add new link
+    <div className={styles.wrapper}>
+      <button className={styles.button} onClick={addLink}>
+        Create new link
       </button>
       {linkList}
-    </>
+    </div>
   );
 }

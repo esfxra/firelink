@@ -12,10 +12,7 @@ interface Props {
 const AdminButton = ({ session, router }) => {
   if (session && router.pathname !== '/admin') {
     return (
-      <button
-        className={styles.buttonLink}
-        onClick={() => router.push('/admin')}
-      >
+      <button className={styles.button} onClick={() => router.push('/admin')}>
         admin
       </button>
     );
@@ -24,11 +21,11 @@ const AdminButton = ({ session, router }) => {
   return null;
 };
 
-const AccessLink = ({ session, router }) => {
+const AccessButton = ({ session, router }) => {
   if (!session && router.pathname !== '/access') {
     return (
       <Link href="/access">
-        <a className={styles.link}>access</a>
+        <a className={styles.button}>access</a>
       </Link>
     );
   }
@@ -70,7 +67,7 @@ export default function Header({ title }: Props) {
 
       <div className={styles.headerLinks}>
         <LogOutLink session={session} />
-        <AccessLink session={session} router={router} />
+        <AccessButton session={session} router={router} />
         <AdminButton session={session} router={router} />
       </div>
     </header>

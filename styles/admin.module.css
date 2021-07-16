@@ -7,3 +7,20 @@
   font-size: 1.50em;
   font-weight: bold;
 }
+
+.button {
+  width: 100%;
+  padding: 10px 10px;
+
+  border-width: 0;
+  border-radius: 5px;
+
+  font-size: 1.2em;
+  color: white;
+  background-color: var(--accent);
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--accent-lighter);
+}
