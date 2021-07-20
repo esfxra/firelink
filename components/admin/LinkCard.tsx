@@ -2,52 +2,50 @@ import React from 'react';
 import TextField from './TextField';
 import LinkToggle from './LinkToggle';
 import styles from './LinkCard.module.css';
+import { Link, LinkUpdates } from '../../types';
 
 interface Props {
-  id: string;
-  url: string;
-  title: string;
-  published: boolean;
-  editLink: (id: string, updates: {}) => {};
+  link: Link;
+  editLink: (id: string, updates: LinkUpdates) => {};
   deleteLink: (id: string) => {};
 }
 
-export default function LinkCard({
-  id,
-  url,
-  title,
-  published,
-  editLink,
-  deleteLink,
-}: Props) {
+export default function LinkCard({ link, editLink, deleteLink }: Props) {
   const saveTitle = ({ value }) => {
-    editLink(id, { title: value });
+    editLink(link._id, { title: value });
   };
 
   const saveURL = ({ value }) => {
-    editLink(id, { url: value });
+    editLink(link._id, { url: value });
   };
 
   const savePublished = ({ value }) => {
-    editLink(id, { published: value });
+    editLink(link._id, { published: value });
   };
 
   return (
     <div className={styles.card}>
       <div className={styles.flexRow}>
         {/* Title text field */}
-        <TextField label="TITLE" initialValue={title} saveValue={saveTitle} />
+        <TextField
+          label="TITLE"
+          initialValue={link.title}
+          saveValue={saveTitle}
+        />
 
         {/* Enable */}
-        <LinkToggle published={published} saveValue={savePublished} />
+        <LinkToggle published={link.published} saveValue={savePublished} />
       </div>
 
       <div className={styles.flexRow}>
         {/* URL text field */}
-        <TextField label="URL" initialValue={url} saveValue={saveURL} />
+        <TextField label="URL" initialValue={link.url} saveValue={saveURL} />
 
         {/* Delete */}
-        <button className={styles.deleteButton} onClick={() => deleteLink(id)}>
+        <button
+          className={styles.deleteButton}
+          onClick={() => deleteLink(link._id)}
+        >
           DELETE
         </button>
       </div>

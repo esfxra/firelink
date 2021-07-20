@@ -5,17 +5,19 @@ import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
 import PromptLayout from '../../components/admin/PromptLayout';
-// import CreateUsernameModal from '../../components/admin/CreateUsernameModal';
-import LinkList from '../../components/admin/LinkList';
+import LinkEditor from '../../components/admin/LinkEditor';
+import Preview from '../../components/admin/Preview';
 import Layout from '../../components/Layout';
 import styles from '../../styles/admin.module.css';
+import { Link } from '../../types';
 
 interface Props {
   user: {
+    _id: string;
     name: string;
     username: string;
   } | null;
-  links: any[] | null;
+  links: Link[] | null;
 }
 
 /**
@@ -66,37 +68,21 @@ export default function Admin({ user, links }: Props) {
     );
   }
 
-  // // Actual admin page components
-  // if (user) {
-  //   if (user.username !== '') {
-  //     <CreateUsernameModal
-  //       id={session.user.id}
-  //       closeModal={() => setUsernameModal(false)}
-  //     />;
-  //   }
-  // }
-
   return (
     <Layout title="campfire | admin">
       <div className={styles.admin}>
         {/* Links editor */}
-        <section className={styles.editor}>
-          <h1 className={styles.headline}>Links</h1>
-          <LinkList initialLinks={links} onChange={updatePreview} />
+        <section className={styles.editorContainer}>
+          <LinkEditor
+            initialLinks={links}
+            userID={user._id}
+            onChange={updatePreview}
+          />
         </section>
 
         {/* User profile page preview */}
-        <section className={styles.preview}>
-          <h1 className={styles.headline}>Preview</h1>
-          <div className={styles.previewWrapper}>
-            <div className={styles.deviceFrame}>
-              <iframe
-                key={checksum}
-                className={styles.iframe}
-                src={`${process.env.NEXT_PUBLIC_API_HOST}/${user.username}`}
-              ></iframe>
-            </div>
-          </div>
+        <section className={styles.previewContainer}>
+          <Preview username={user.username} checksum={checksum} />
         </section>
       </div>
 
@@ -127,7 +113,7 @@ export async function getServerSideProps(context) {
   const links = await getLinksByUserID(db, session.user.id);
 
   /**
-   * The session obtained from the context will be available in pageProps
+   * The session obtained sfrom the context will be available in pageProps
    * These then are passed to the next-auth Provider for the client
    *
    * See the setup in _app.js

@@ -7,49 +7,13 @@
   display: flex;
 }
 
-.editor {
+.editorContainer {
   width: 60%;
 }
 
-.preview {
+.previewContainer {
   width: 38%;
   margin-left: 2vw;
 
   --container-radius: 10px;
-}
-
-.previewWrapper {
-  padding: 2vw;
-}
-
-.deviceFrame {
-  margin: 0 auto;
-  width: 375px;  
-  height: 812px;
-  border: 3px solid var(--main-foreground);
-  border-radius: var(--container-radius);
-}
-
-.iframe {
-  width: 100%;  
-  height: 100%;
-  border-width: 0;
-  border-radius: var(--container-radius);
-}
-
-.button {
-  width: 100%;
-  padding: 10px 10px;
-
-  border-width: 0;
-  border-radius: 5px;
-
-  font-size: 1.2em;
-  color: white;
-  background-color: var(--accent);
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: var(--accent-lighter);
 }
