@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LinkCard from './LinkCard';
 import { Link, LinkUpdates } from '../../types';
 import styles from './LinkEditor.module.css';
+import Button from '../Button';
 
 interface Props {
   initialLinks: Link[];
@@ -49,11 +50,10 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
 
   return (
     <>
-      <h1>Links</h1>
       <div className={styles.editor}>
-        <button className={styles.button} onClick={addLink}>
-          Create new link
-        </button>
+        <Button fullWidth onClick={addLink} palette="primary">
+          Create a new link
+        </Button>
 
         {links.map((link) => (
           <LinkCard

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/client';
-import Layout from '../components/Layout';
-import styles from '../styles/access.module.css';
-import Button from '../components/Button';
+import Layout from '../../components/Layout';
+import styles from '../../styles/access.module.css';
+import Button from '../../components/Button';
 
 /**
  * @todo Add at least one more auth provider

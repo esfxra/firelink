@@ -46,7 +46,16 @@ export async function getServerSideProps(context: any) {
   const { username } = context.query;
   const { db } = await connectToDB();
 
-  const user = await getUserByUsername(db, username);
+  const result = await getUserByUsername(db, username);
+
+  // Handle the case for which the user doesn't exist
+  if (!result.success) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const user = result.data;
   const links = await getLinksByUserID(db, user._id);
 
   return {

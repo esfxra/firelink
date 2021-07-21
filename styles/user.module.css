@@ -1,7 +1,6 @@
 .userDetails {
   text-align: center;
   padding: 10px;
-
   color: var(--accent);
 }
 
@@ -10,14 +9,14 @@
 }
 
 .avatar{
-  border-radius: 5px;
+  border-radius: 99%;
 }
 
 .link {
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
-  color: var(--button-text);
+  color: var(--button-text-primary);
   background-color: var(--accent);
 }
 

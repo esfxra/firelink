@@ -27,7 +27,8 @@ export default (req, res) =>
       },
     }),
     pages: {
-      signIn: '/login',
+      signIn: '/auth/access',
+      newUser: '/auth/newUser',
     },
     callbacks: {
       async session(session, user) {

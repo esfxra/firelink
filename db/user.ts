@@ -27,7 +27,12 @@ export async function getUserById(db: Db, id: string) {
 
 export async function getUserByUsername(db: Db, username: string) {
   const user = await db.collection('users').findOne({ username: username });
-  return convertToSerializable(user);
+
+  if (!user) {
+    return { success: false, data: null };
+  }
+
+  return { success: true, data: convertToSerializable(user) };
 }
 
 export async function updateUsername(db: Db, id: string, username: string) {

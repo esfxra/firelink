@@ -13,9 +13,19 @@
   color: var(--accent);
 }
 
-.link {
+.headerLinks {
   font-size: 1.2em;
+}
 
+.headerLinks * {
+  margin-right: 1em;
+}
+
+.headerLinks *:last-child {
+  margin-right: 0;
+}
+
+.link {
   text-decoration: underline;
   color: var(--accent);  
   cursor: pointer;
@@ -23,21 +33,4 @@
 
 .link:hover {
   color: var(--accent-lighter)
-}
-
-.button {
-  margin-left: 15px;
-  padding: 5px 15px;
-
-  border-width: 0;
-  border-radius: 5px;
-
-  font-size: 1.2em;
-  color: var(--button-text);
-  background-color: var(--button-background);
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: var(--button-background-hover)
 }

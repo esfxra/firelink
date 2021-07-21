@@ -1,4 +1,5 @@
 import { Provider } from 'next-auth/client';
+import '../styles/variables.css';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {

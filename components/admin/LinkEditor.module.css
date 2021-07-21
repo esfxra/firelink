@@ -3,20 +3,10 @@
   margin: 0 auto;
 }
 
-.button {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px 10px;
-
-  border-width: 0;
-  border-radius: 5px;
-
-  font-size: 1.2em;
-  color: white;
-  background-color: var(--accent);
-  cursor: pointer;
+.editor > * {
+  margin-bottom: 10px;
 }
 
-.button:hover {
-  background-color: var(--accent-lighter);
+.editor > *:last-child {
+  margin-bottom: 0;
 }

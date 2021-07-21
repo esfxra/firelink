@@ -13,7 +13,7 @@ export default class User extends Adapters.TypeORM.Models.User.model {
 
     // Create as empty for the user to fill in later
     if (!this.username) {
-      this.username = '';
+      this.username = null;
     }
   }
 }
@@ -27,7 +27,6 @@ export const UserSchema = {
     // Adding 'custom' username field
     username: {
       type: 'varchar',
-      unique: true,
     },
   },
 };

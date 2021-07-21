@@ -3,6 +3,7 @@ import TextField from './TextField';
 import LinkToggle from './LinkToggle';
 import styles from './LinkCard.module.css';
 import { Link, LinkUpdates } from '../../types';
+import Button from '../Button';
 
 interface Props {
   link: Link;
@@ -42,12 +43,9 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
         <TextField label="URL" initialValue={link.url} saveValue={saveURL} />
 
         {/* Delete */}
-        <button
-          className={styles.deleteButton}
-          onClick={() => deleteLink(link._id)}
-        >
+        <Button palette="danger" onClick={() => deleteLink(link._id)}>
           DELETE
-        </button>
+        </Button>
       </div>
     </div>
   );

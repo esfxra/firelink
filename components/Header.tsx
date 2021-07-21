@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/client';
 import styles from './Header.module.css';
+import Button from './Button';
 
 interface Props {
   title: string;
@@ -11,11 +12,7 @@ interface Props {
 
 const AdminButton = ({ session, router }) => {
   if (session && router.pathname !== '/admin') {
-    return (
-      <button className={styles.button} onClick={() => router.push('/admin')}>
-        admin
-      </button>
-    );
+    return <Button onClick={() => router.push('/admin')}>admin</Button>;
   }
 
   return null;
@@ -25,7 +22,9 @@ const AccessButton = ({ session, router }) => {
   if (!session && router.pathname !== '/access') {
     return (
       <Link href="/access">
-        <a className={styles.button}>access</a>
+        <a>
+          <Button>access</Button>
+        </a>
       </Link>
     );
   }

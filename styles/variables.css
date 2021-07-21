@@ -1,0 +1,34 @@
+:root {
+  --main-background: #F5F5F5;
+  --main-foreground: #39393A;
+
+  --elevation-background: #FFFFFF;
+  --elevation-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
+  --accent: #FF4500;
+  --accent-lighter: #fd5a31;
+
+  --accent-bright: #FF7F11;
+  --accent-bright-lighter: #ffa000;
+
+  --accent-alt: #539987;
+  --accent-alt-lighter: #6e9fa5;
+
+  --accent-danger: #F44336;
+  --accent-danger-lighter: #ff5252;
+
+  --disabled: #d5d5d5;
+
+  /* Buttons */
+  --button-background-primary: var(--accent);
+  --button-text-primary: #F5F5F5;
+
+  --button-background-secondary: var(--accent-alt);
+  --button-text-secondary: #F5F5F5;
+
+  --button-background-carbon: var(--main-foreground);
+  --button-text-carbon: #F5F5F5;
+
+  --button-background-danger: var(--accent-danger);
+  --button-text-danger: var(--accent-danger);
+}

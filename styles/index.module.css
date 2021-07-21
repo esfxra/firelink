@@ -7,19 +7,24 @@
   display: flex;
 }
 
+.profiles > * {
+  margin-right: 10px;
+}
+
+.profiles > *:last-child {
+  margin-right: 0;
+}
+
 .profile {
   margin-right: 5px;
   padding: 7.5px;
   border-radius: 5px;
 
   color: white;
-  background-color: var(--button-background);
+  background-color: var(--button-background-primary);
 }
 
 .profile:hover {
-  background-color: var(--button-background-hover);
+  opacity: 0.9;
 }
 
-.profile:last-of-type {
-  margin-right: 0;
-}

@@ -14,7 +14,6 @@ interface Props {
 export default function Preview({ username, checksum }: Props) {
   return (
     <>
-      <h1>Preview</h1>
       <div className={styles.preview}>
         <div className={styles.device}>
           <iframe
