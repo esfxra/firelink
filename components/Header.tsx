@@ -21,7 +21,7 @@ const AdminButton = ({ session, router }) => {
 const AccessButton = ({ session, router }) => {
   if (!session && router.pathname !== '/access') {
     return (
-      <Link href="/access">
+      <Link href="/auth/access">
         <a>
           <Button>access</Button>
         </a>
