@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write \"{pages,components,db,middleware,models}/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "mongodb": "^3.6.10",
@@ -20,6 +22,9 @@
     "@types/mongodb": "^3.6.20",
     "@types/node": "^16.3.1",
     "@types/react": "^17.0.14",
+    "eslint-config-next": "^11.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.3.2",
     "typescript": "^4.3.5"
   }
 }
