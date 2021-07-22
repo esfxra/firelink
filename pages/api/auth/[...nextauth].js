@@ -6,7 +6,7 @@ import Models from '../../../models';
 /**
  * @todo Add more providers, and consider standard username-password credentials
  */
-export default (req, res) =>
+const auth = (req, res) =>
   NextAuth(req, res, {
     session: {
       // DB sessions are used by default, but configuring to use jwt instead
@@ -48,3 +48,5 @@ export default (req, res) =>
       },
     },
   });
+
+export default auth;

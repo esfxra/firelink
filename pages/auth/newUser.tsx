@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import PromptLayout from '../../components/PromptLayout';
 import styles from '../../styles/newUser.module.css';
 
-export default function newUser({ session }) {
+export default function NewUser({ session }) {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [valid, setValid] = useState(false);

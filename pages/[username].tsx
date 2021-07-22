@@ -8,6 +8,7 @@ import styles from '../styles/user.module.css';
 export default function User({ user, links }) {
   return (
     <ProfileLayout title={`@${user.username} | campfire`}>
+      {/* Profile details */}
       <div className={styles.userDetails}>
         {user.image && (
           <Image
@@ -15,14 +16,15 @@ export default function User({ user, links }) {
             width={100}
             height={100}
             className={styles.avatar}
+            alt="User profile picture"
           />
         )}
-
         <div className={styles.name}>@{user.username}</div>
       </div>
 
+      {/* Links */}
       <div className={styles.links}>
-        {links.length === 0 ? (
+        {!links.length ? (
           <p>No links to see yet</p>
         ) : (
           links.map((link) => {
@@ -31,7 +33,12 @@ export default function User({ user, links }) {
             }
 
             return (
-              <a href={link.url} target="_blank" key={link._id}>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                key={link._id}
+              >
                 <div className={styles.link}>{link.title}</div>
               </a>
             );

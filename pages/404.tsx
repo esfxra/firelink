@@ -24,7 +24,7 @@ export default function Custom404() {
         <p>
           Go back to{' '}
           <Link href="/">
-            <a style={{ color: 'var(--accent)' }}> campfire's homepage</a>
+            <a style={{ color: 'var(--accent)' }}> the homepage</a>
           </Link>
           .
         </p>
