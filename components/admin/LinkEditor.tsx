@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
+import { Center, Button, VStack } from '@chakra-ui/react';
 import LinkCard from './LinkCard';
 import { Link, LinkUpdates } from '../../types';
-import styles from './LinkEditor.module.css';
-import Button from '../Button';
 
 interface Props {
   initialLinks: Link[];
@@ -50,20 +49,20 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
 
   return (
     <>
-      <div className={styles.editor}>
-        <Button fullWidth onClick={addLink} palette="primary">
-          Create a new link
-        </Button>
+      <Center>
+        <VStack width="100%" maxWidth="800px" align="stretch" spacing={5}>
+          <Button onClick={addLink}>Create a new link</Button>
 
-        {links.map((link) => (
-          <LinkCard
-            key={link._id}
-            link={link}
-            editLink={editLink}
-            deleteLink={deleteLink}
-          />
-        ))}
-      </div>
+          {links.map((link) => (
+            <LinkCard
+              key={link._id}
+              link={link}
+              editLink={editLink}
+              deleteLink={deleteLink}
+            />
+          ))}
+        </VStack>
+      </Center>
     </>
   );
 }

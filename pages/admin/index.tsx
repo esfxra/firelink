@@ -1,15 +1,24 @@
 import { getSession, useSession } from 'next-auth/client';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useState } from 'react';
+import {
+  Divider,
+  Link,
+  Center,
+  Flex,
+  Text,
+  Grid,
+  Heading,
+  Button,
+  Box,
+} from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
-import PromptLayout from '../../components/PromptLayout';
+import Header from '../../components/Header';
 import LinkEditor from '../../components/admin/LinkEditor';
 import Preview from '../../components/admin/Preview';
-import Layout from '../../components/Layout';
-import Button from '../../components/Button';
-import styles from '../../styles/admin.module.css';
 import { Link as LinkType } from '../../types';
 
 interface Props {
@@ -43,37 +52,72 @@ export default function Admin({ user, links }: Props) {
 
   if (!loading && !session) {
     return (
-      <PromptLayout>
+      <Box>
         <p>You are not authenticated.</p>
-        <Link href="/access">
-          <a>
+        <NextLink href="/auth/access" passHref>
+          <Link>
             <Button>Log in</Button>
-          </a>
-        </Link>
-      </PromptLayout>
+          </Link>
+        </NextLink>
+      </Box>
     );
   }
 
   return (
-    <Layout title="campfire | admin">
-      <div className={styles.admin}>
+    <Grid height="100vh" templateRows="auto 1fr auto">
+      {/* Header */}
+      <Box boxShadow="md" padding={5}>
+        <Header title="campfire | admin" />
+      </Box>
+
+      {/* Main */}
+      <Grid templateColumns="1.5fr 10px 1fr">
         {/* Links editor */}
-        <section className={styles.editorContainer}>
-          <h1>Link Editor</h1>
+        <Box padding={5}>
+          <Heading as="h2" mb={10}>
+            Link Editor
+          </Heading>
           <LinkEditor
             initialLinks={links}
             userID={user._id}
             onChange={updatePreview}
           />
-        </section>
+        </Box>
+
+        <Center>
+          <Divider orientation="vertical" />
+        </Center>
 
         {/* User profile page preview */}
-        <section className={styles.previewContainer}>
-          <h1>Preview</h1>
+        <Box padding={5}>
+          <Heading as="h2" mb={10}>
+            Preview
+          </Heading>
           <Preview username={user.username} checksum={checksum} />
-        </section>
-      </div>
-    </Layout>
+        </Box>
+      </Grid>
+
+      {/* Footer */}
+      <Flex
+        boxShadow="dark-lg"
+        paddingX={5}
+        paddingY={3}
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Text>Campfire &copy; 2021</Text>
+
+        <Link
+          href="https://github.com/diegoserranor/campfire"
+          isExternal={true}
+          rel="noreferrer"
+        >
+          <Button colorScheme="blackAlpha" rightIcon={<ExternalLinkIcon />}>
+            GitHub repo
+          </Button>
+        </Link>
+      </Flex>
+    </Grid>
   );
 }
 

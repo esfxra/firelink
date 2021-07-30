@@ -1,28 +1,31 @@
-import Link from 'next/link';
+import LinkNext from 'next/link';
 import { connectToDB } from '../db/connect';
 import { getUsers } from '../db/user';
-import Layout from '../components/Layout';
-import Button from '../components/Button';
-import styles from '../styles/index.module.css';
+import { Box, Link, Heading, Flex, Button } from '@chakra-ui/react';
+import Header from '../components/Header';
 
 export default function Home({ users }) {
   return (
-    <Layout title="campfire">
-      <h1 className={styles.headline}>discover profiles</h1>
-      <div className={styles.profiles}>
+    <Box w={['90%', null, '80%']} m="5vw auto">
+      <Header title="campfire" />
+      <Heading as="h2" fontSize="2xl" mt={5} mb={3}>
+        Discover profiles
+      </Heading>
+
+      <Flex>
         {users.map((user: any) => {
           if (user.username) {
             return (
-              <Link href={`/${user.username}`} key={user.username}>
-                <a>
+              <LinkNext href={`/${user.username}`} key={user.username}>
+                <Link mr={3}>
                   <Button>@{user.username}</Button>
-                </a>
-              </Link>
+                </Link>
+              </LinkNext>
             );
           }
         })}
-      </div>
-    </Layout>
+      </Flex>
+    </Box>
   );
 }
 

@@ -1,9 +1,16 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 import { signIn, useSession } from 'next-auth/client';
-import Layout from '../../components/Layout';
-import styles from '../../styles/access.module.css';
-import Button from '../../components/Button';
+import {
+  Flex,
+  Heading,
+  Button,
+  Text,
+  Container,
+  Link,
+  Spacer,
+} from '@chakra-ui/react';
 
 /**
  * @todo Add at least one more auth provider
@@ -25,13 +32,35 @@ export default function Access() {
   };
 
   return (
-    <Layout title="campfire | access">
-      <div className={styles.access}>
-        <h1>login or register</h1>
-        <Button palette="carbon" onClick={handleGitHub}>
+    <Flex
+      height="100vh"
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      background="gray.100"
+    >
+      <Spacer />
+
+      <Container
+        boxShadow="md"
+        backgroundColor="white"
+        padding={25}
+        rounded={10}
+      >
+        <Heading as="h1">Login / register</Heading>
+        <Text>You will be asked to pick a username later</Text>
+        <Button colorScheme="blackAlpha" onClick={handleGitHub}>
           Continue with GitHub
         </Button>
-      </div>
-    </Layout>
+      </Container>
+
+      <Spacer />
+
+      <NextLink href="/" passHref>
+        <Link p={5}>
+          <Heading as="h2">campfire</Heading>
+        </Link>
+      </NextLink>
+    </Flex>
   );
 }

@@ -1,9 +1,7 @@
-import React from 'react';
-import TextField from './TextField';
-import LinkToggle from './LinkToggle';
-import styles from './LinkCard.module.css';
+import React, { useState } from 'react';
+import { Box, Grid, GridItem, Switch, Button } from '@chakra-ui/react';
+import LinkText from './LinkText';
 import { Link, LinkUpdates } from '../../types';
-import Button from '../Button';
 
 interface Props {
   link: Link;
@@ -12,6 +10,8 @@ interface Props {
 }
 
 export default function LinkCard({ link, editLink, deleteLink }: Props) {
+  const [published, setPublished] = useState(link.published);
+
   const saveTitle = ({ value }) => {
     editLink(link._id, { title: value });
   };
@@ -25,28 +25,36 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
   };
 
   return (
-    <div className={styles.card}>
-      <div className={styles.flexRow}>
+    <Box p={5} rounded={8} boxShadow="md">
+      <Grid gridTemplateColumns="repeat(5, 1fr)" mb={4}>
         {/* Title text field */}
-        <TextField
-          label="TITLE"
-          initialValue={link.title}
-          saveValue={saveTitle}
-        />
+        <GridItem colSpan={4}>
+          <LinkText initialValue={link.title} onSave={saveTitle} />
+        </GridItem>
 
         {/* Enable */}
-        <LinkToggle published={link.published} saveValue={savePublished} />
-      </div>
+        <Switch
+          justifySelf="end"
+          alignSelf="center"
+          isChecked={published}
+          onChange={() => {
+            savePublished({ value: !published });
+            setPublished((state) => !state);
+          }}
+        />
+      </Grid>
 
-      <div className={styles.flexRow}>
+      <Grid gridTemplateColumns="repeat(5, 1fr)">
         {/* URL text field */}
-        <TextField label="URL" initialValue={link.url} saveValue={saveURL} />
+        <GridItem colSpan={4}>
+          <LinkText initialValue={link.url} onSave={saveURL} />
+        </GridItem>
 
         {/* Delete */}
-        <Button palette="danger" onClick={() => deleteLink(link._id)}>
+        <Button justifySelf="end" onClick={() => deleteLink(link._id)}>
           DELETE
         </Button>
-      </div>
-    </div>
+      </Grid>
+    </Box>
   );
 }

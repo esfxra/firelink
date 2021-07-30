@@ -1,51 +1,80 @@
 import Image from 'next/image';
+import NextLink from 'next/link';
 import { connectToDB } from '../db/connect';
 import { getUserByUsername } from '../db/user';
 import { getLinksByUserID } from '../db/link';
-import ProfileLayout from '../components/ProfileLayout';
-import styles from '../styles/user.module.css';
+import {
+  Box,
+  Center,
+  Heading,
+  Flex,
+  VStack,
+  Container,
+  Text,
+  Link,
+} from '@chakra-ui/react';
 
 export default function User({ user, links }) {
   return (
-    <ProfileLayout title={`@${user.username} | campfire`}>
-      {/* Profile details */}
-      <div className={styles.userDetails}>
-        {user.image && (
-          <Image
-            src={user.image}
-            width={100}
-            height={100}
-            className={styles.avatar}
-            alt="User profile picture"
-          />
-        )}
-        <div className={styles.name}>@{user.username}</div>
-      </div>
+    <Flex minHeight="100vh" direction="column" p={5}>
+      <Box as="main" flex={1}>
+        {/* Profile details */}
+        <VStack mb={5}>
+          {user.image && (
+            <Image
+              src={user.image}
+              width={100}
+              height={100}
+              className="avatar"
+              alt="User profile picture"
+            />
+          )}
+          <Text fontWeight="bold" color="steelblue">
+            @{user.username}
+          </Text>
+        </VStack>
 
-      {/* Links */}
-      <div className={styles.links}>
-        {!links.length ? (
-          <p>No links to see yet</p>
-        ) : (
-          links.map((link) => {
-            if (!link.published) {
-              return;
-            }
+        {/* Links */}
+        <VStack align="stretch" spacing={3}>
+          {!links.length ? (
+            <Text>No links to see (yet).</Text>
+          ) : (
+            links.map((link) => {
+              if (!link.published) {
+                return;
+              }
 
-            return (
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                key={link._id}
-              >
-                <div className={styles.link}>{link.title}</div>
-              </a>
-            );
-          })
-        )}
-      </div>
-    </ProfileLayout>
+              return (
+                <Link
+                  href={link.url}
+                  isExternal={true}
+                  rel="noreferrer"
+                  key={link._id}
+                >
+                  <Container
+                    p="5px 10px"
+                    rounded={8}
+                    backgroundColor="gray.100"
+                  >
+                    {link.title}
+                  </Container>
+                </Link>
+              );
+            })
+          )}
+        </VStack>
+      </Box>
+
+      <Box as="footer" flexShrink={0}>
+        <Center>
+          <NextLink href="/">
+            <Link>
+              <Heading as="h1">campfire</Heading>
+            </Link>
+          </NextLink>
+        </Center>
+      </Box>
+    </Flex>
   );
 }
 
@@ -62,8 +91,12 @@ export async function getServerSideProps(context: any) {
     };
   }
 
+  /**
+   * @todo API should only return published links
+   */
   const user = result.data;
-  const links = await getLinksByUserID(db, user._id);
+  const linksByUser = await getLinksByUserID(db, user._id);
+  const links = linksByUser.filter((link) => link.published);
 
   return {
     props: {

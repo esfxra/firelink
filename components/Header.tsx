@@ -1,10 +1,9 @@
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/client';
-import styles from './Header.module.css';
-import Button from './Button';
+import { Flex, Heading, Link, Button, HStack } from '@chakra-ui/react';
 
 interface Props {
   title: string;
@@ -12,36 +11,32 @@ interface Props {
 
 const AdminButton = ({ session, router }) => {
   if (session && router.pathname !== '/admin') {
-    return <Button onClick={() => router.push('/admin')}>admin</Button>;
+    return <Button onClick={() => router.push('/admin')}>Admin</Button>;
   }
 
   return null;
 };
 
 const AccessButton = ({ session, router }) => {
-  if (!session && router.pathname !== '/access') {
+  if (!session && router.pathname !== '/auth/access') {
     return (
-      <Link href="/auth/access">
-        <a>
-          <Button>access</Button>
-        </a>
-      </Link>
+      <NextLink href="/auth/access">
+        <Link>
+          <Button>Access</Button>
+        </Link>
+      </NextLink>
     );
   }
 
   return null;
 };
 
-const LogOutLink = ({ session }) => {
-  if (session)
+const SignOutButton = ({ session }) => {
+  if (session) {
     return (
-      <span
-        className={styles.link}
-        onClick={() => signOut({ callbackUrl: '/' })}
-      >
-        log out
-      </span>
+      <Button onClick={() => signOut({ callbackUrl: '/' })}>Log out</Button>
     );
+  }
 
   return null;
 };
@@ -54,21 +49,23 @@ export default function Header({ title }: Props) {
   const router = useRouter();
 
   return (
-    <header className={styles.header}>
+    <Flex justifyContent="space-between" alignItems="center">
       <Head>
         <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Link href="/">
-        <a className={styles.logo}>campfire</a>
-      </Link>
+      <NextLink href="/" passHref>
+        <Link>
+          <Heading as="h1">campfire</Heading>
+        </Link>
+      </NextLink>
 
-      <div className={styles.headerLinks}>
-        <LogOutLink session={session} />
+      <HStack>
+        <SignOutButton session={session} />
         <AccessButton session={session} router={router} />
         <AdminButton session={session} router={router} />
-      </div>
-    </header>
+      </HStack>
+    </Flex>
   );
 }

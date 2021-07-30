@@ -3,9 +3,17 @@ import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/client';
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
-import Button from '../../components/Button';
-import PromptLayout from '../../components/PromptLayout';
-import styles from '../../styles/newUser.module.css';
+import {
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  Flex,
+  Box,
+  Heading,
+  Text,
+  Input,
+  Button,
+} from '@chakra-ui/react';
 
 export default function NewUser({ session }) {
   const router = useRouter();
@@ -29,35 +37,38 @@ export default function NewUser({ session }) {
   };
 
   return (
-    <PromptLayout>
-      <h1 style={{ marginTop: 0 }}>Pick a username</h1>
+    <Flex
+      height="100vh"
+      justifyContent="center"
+      alignItems="center"
+      backgroundColor="gray.100"
+    >
+      <Box padding={8} boxShadow="2xl" rounded={10} backgroundColor="white">
+        <Heading as="h1" mb={3}>
+          Pick a username
+        </Heading>
 
-      <p>
-        This will be the handle for your campfire,
-        <br /> where all your links will be available.
-      </p>
-      <p>
-        For instance, campfire.com/
-        <span className={styles.urlUsername}>BlueberryHunter</span>
-      </p>
+        <Text mb={3}>
+          This will be the handle for your campfire,
+          <br /> where all your links will be available.
+        </Text>
 
-      <input
-        className={styles.input}
-        type="text"
-        value={username}
-        onChange={handleChange}
-      />
+        <Input mb={3} value={username} onChange={handleChange} />
 
-      {!valid && username !== '' && (
-        <div className={styles.invalid}>
-          Username is invalid or already exists
-        </div>
-      )}
+        {!valid && username !== '' && (
+          <Alert status="error" rounded={5} mt={3} mb={3}>
+            <AlertIcon />
+            <AlertDescription>
+              Username is invalid or already exists
+            </AlertDescription>
+          </Alert>
+        )}
 
-      <Button disabled={!valid} fullWidth onClick={submitUsername}>
-        Submit
-      </Button>
-    </PromptLayout>
+        <Button width="100%" isDisabled={!valid} onClick={submitUsername}>
+          Submit
+        </Button>
+      </Box>
+    </Flex>
   );
 }
 
