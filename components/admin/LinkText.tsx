@@ -40,8 +40,12 @@ export default function LinkText({ initialValue, onSave }: Props) {
         onChange={handleChange}
         ref={inputRef}
       />
-      {enabled && <CheckIcon cursor="pointer" onClick={handleSave} />}
-      {!enabled && <EditIcon cursor="pointer" onClick={handleEdit} />}
+      {enabled && (
+        <CheckIcon cursor="pointer" color="blackAlpha" onClick={handleSave} />
+      )}
+      {!enabled && (
+        <EditIcon cursor="pointer" color="blackAlpha" onClick={handleEdit} />
+      )}
     </Flex>
   );
 }

@@ -37,7 +37,7 @@ export default function Access() {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      background="gray.100"
+      background="gray.50"
     >
       <Spacer />
 

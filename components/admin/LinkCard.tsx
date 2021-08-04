@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Grid, GridItem, Switch, Button } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import LinkText from './LinkText';
 import { Link, LinkUpdates } from '../../types';
 
@@ -25,7 +26,7 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
   };
 
   return (
-    <Box p={5} rounded={8} boxShadow="md">
+    <Box p={5} rounded={8} boxShadow="md" backgroundColor="white">
       <Grid gridTemplateColumns="repeat(5, 1fr)" mb={4}>
         {/* Title text field */}
         <GridItem colSpan={4}>
@@ -37,6 +38,7 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
           justifySelf="end"
           alignSelf="center"
           isChecked={published}
+          colorScheme="orange"
           onChange={() => {
             savePublished({ value: !published });
             setPublished((state) => !state);
@@ -51,9 +53,21 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
         </GridItem>
 
         {/* Delete */}
-        <Button justifySelf="end" onClick={() => deleteLink(link._id)}>
+        <DeleteIcon
+          justifySelf="end"
+          alignSelf="center"
+          cursor="pointer"
+          color="blackAlpha"
+        />
+        {/* <Button
+          colorScheme="blackAlpha"
+          justifySelf="end"
+          alignSelf="center"
+          size="sm"
+          onClick={() => deleteLink(link._id)}
+        >
           DELETE
-        </Button>
+        </Button> */}
       </Grid>
     </Box>
   );

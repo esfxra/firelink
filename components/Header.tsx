@@ -11,7 +11,16 @@ interface Props {
 
 const AdminButton = ({ session, router }) => {
   if (session && router.pathname !== '/admin') {
-    return <Button onClick={() => router.push('/admin')}>Admin</Button>;
+    return (
+      <Button
+        color="white"
+        bgGradient="linear(to-r, red.500, orange.500)"
+        _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+        onClick={() => router.push('/admin')}
+      >
+        Admin
+      </Button>
+    );
   }
 
   return null;
@@ -22,7 +31,13 @@ const AccessButton = ({ session, router }) => {
     return (
       <NextLink href="/auth/access">
         <Link>
-          <Button>Access</Button>
+          <Button
+            color="white"
+            bgGradient="linear(to-r, red.500, orange.500)"
+            _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+          >
+            Access
+          </Button>
         </Link>
       </NextLink>
     );
@@ -34,7 +49,13 @@ const AccessButton = ({ session, router }) => {
 const SignOutButton = ({ session }) => {
   if (session) {
     return (
-      <Button onClick={() => signOut({ callbackUrl: '/' })}>Log out</Button>
+      <Button
+        colorScheme="gray"
+        variant="outline"
+        onClick={() => signOut({ callbackUrl: '/' })}
+      >
+        Log out
+      </Button>
     );
   }
 

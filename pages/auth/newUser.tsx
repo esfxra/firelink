@@ -41,7 +41,7 @@ export default function NewUser({ session }) {
       height="100vh"
       justifyContent="center"
       alignItems="center"
-      backgroundColor="gray.100"
+      backgroundColor="gray.50"
     >
       <Box padding={8} boxShadow="2xl" rounded={10} backgroundColor="white">
         <Heading as="h1" mb={3}>

@@ -18,7 +18,9 @@ export default function Home({ users }) {
             return (
               <LinkNext href={`/${user.username}`} key={user.username}>
                 <Link mr={3}>
-                  <Button>@{user.username}</Button>
+                  <Button colorScheme="gray" variant="outline">
+                    @{user.username}
+                  </Button>
                 </Link>
               </LinkNext>
             );

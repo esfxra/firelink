@@ -66,15 +66,15 @@ export default function Admin({ user, links }: Props) {
   return (
     <Grid height="100vh" templateRows="auto 1fr auto">
       {/* Header */}
-      <Box boxShadow="md" padding={5}>
+      <Box boxShadow="md" padding={5} zIndex="overlay">
         <Header title="campfire | admin" />
       </Box>
 
       {/* Main */}
-      <Grid templateColumns="1.5fr 10px 1fr">
+      <Grid templateColumns="1.5fr 10px 1fr" bg="gray.50">
         {/* Links editor */}
         <Box padding={5}>
-          <Heading as="h2" mb={10}>
+          <Heading as="h2" size="lg" mb={10}>
             Link Editor
           </Heading>
           <LinkEditor
@@ -90,7 +90,7 @@ export default function Admin({ user, links }: Props) {
 
         {/* User profile page preview */}
         <Box padding={5}>
-          <Heading as="h2" mb={10}>
+          <Heading as="h2" size="lg" mb={10}>
             Preview
           </Heading>
           <Preview username={user.username} checksum={checksum} />
@@ -99,13 +99,14 @@ export default function Admin({ user, links }: Props) {
 
       {/* Footer */}
       <Flex
-        boxShadow="dark-lg"
         paddingX={5}
         paddingY={3}
         justifyContent="space-between"
         alignItems="center"
+        // backgroundColor="blackAlpha.800"
+        bg="gray.800"
       >
-        <Text>Campfire &copy; 2021</Text>
+        <Text color="white">Campfire &copy; 2021</Text>
 
         <Link
           href="https://github.com/diegoserranor/campfire"

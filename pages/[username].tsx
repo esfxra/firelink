@@ -29,7 +29,11 @@ export default function User({ user, links }) {
               alt="User profile picture"
             />
           )}
-          <Text fontWeight="bold" color="steelblue">
+          <Text
+            fontWeight="bold"
+            bgGradient="linear(to-r, red.500, orange.500)"
+            bgClip="text"
+          >
             @{user.username}
           </Text>
         </VStack>
@@ -54,7 +58,8 @@ export default function User({ user, links }) {
                   <Container
                     p="5px 10px"
                     rounded={8}
-                    backgroundColor="gray.100"
+                    borderColor="gray.500"
+                    borderWidth={1}
                   >
                     {link.title}
                   </Container>

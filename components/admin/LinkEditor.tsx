@@ -51,7 +51,14 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
     <>
       <Center>
         <VStack width="100%" maxWidth="800px" align="stretch" spacing={5}>
-          <Button onClick={addLink}>Create a new link</Button>
+          <Button
+            color="white"
+            bgGradient="linear(to-r, red.500, orange.500)"
+            _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+            onClick={addLink}
+          >
+            Create a new link
+          </Button>
 
           {links.map((link) => (
             <LinkCard
