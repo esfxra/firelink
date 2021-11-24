@@ -36,6 +36,6 @@ export async function getStaticProps() {
   const users = await getUsers(db);
 
   return {
-    props: { users },
+    props: { users: [] },
   };
 }

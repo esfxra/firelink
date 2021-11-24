@@ -13,9 +13,6 @@ global.mongo = global.mongo || {};
 export const connectToDB = async () => {
   if (!global.mongo.client) {
     global.mongo.client = new MongoClient(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      bufferMaxEntries: 0,
       connectTimeoutMS: 10000,
     });
 

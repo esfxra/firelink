@@ -1,8 +1,8 @@
-import jwt from 'next-auth/jwt';
+import { getToken } from 'next-auth/jwt';
 
 const auth = async (req, res, next) => {
   // Decode the token with the JWT secret, and attach it to req.user
-  const token = await jwt.getToken({ req, secret: process.env.JWT_SECRET });
+  const token = await getToken({ req, secret: process.env.JWT_SECRET });
 
   if (token) {
     // Signed in

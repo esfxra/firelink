@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { signOut, useSession } from 'next-auth/client';
+import { signOut, useSession } from 'next-auth/react';
 import { Flex, Heading, Link, Button, HStack } from '@chakra-ui/react';
 
 interface Props {
@@ -66,7 +66,7 @@ const SignOutButton = ({ session }) => {
  * A header to be used from home, and from admin
  */
 export default function Header({ title }: Props) {
-  const [session, _] = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   return (
