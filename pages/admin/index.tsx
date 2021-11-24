@@ -1,4 +1,4 @@
-import { getSession, useSession } from 'next-auth/client';
+import { getSession, useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useState } from 'react';
 import {
@@ -31,8 +31,13 @@ interface Props {
 }
 
 export default function Admin({ user, links }: Props) {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
   const [checksum, setChecksum] = useState(0);
+
+  console.log(session);
+  console.log(status);
+
+  const loading = status === 'loading';
 
   const updatePreview = () => {
     setChecksum((checksum) => checksum + 1);
@@ -130,7 +135,7 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: '/access',
+        destination: '/auth/access',
         permanent: false,
       },
     };
@@ -152,6 +157,8 @@ export async function getServerSideProps(context) {
   }
 
   const links = await getLinksByUserID(db, session.user.id);
+
+  console.log(links);
 
   return {
     props: { user, links },

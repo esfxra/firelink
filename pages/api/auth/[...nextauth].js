@@ -1,52 +1,61 @@
 import NextAuth from 'next-auth';
-import Providers from 'next-auth/providers';
-import Adapters from 'next-auth/adapters';
-import Models from '../../../models';
+import GiHubProvider from 'next-auth/providers/github';
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
+
+import { connectToDB } from '../../../db/connect';
 
 /**
  * @todo Add more providers, and consider standard username-password credentials
  */
-const auth = (req, res) =>
-  NextAuth(req, res, {
+const auth = async (req, res) => {
+  const { db } = await connectToDB();
+
+  return NextAuth(req, res, {
     session: {
-      // DB sessions are used by default, but configuring to use jwt instead
-      jwt: true,
+      strategy: 'jwt',
     },
     jwt: {
       secret: process.env.JWT_SECRET,
     },
     providers: [
-      Providers.GitHub({
+      GiHubProvider({
         clientId: process.env.GITHUB_ID,
         clientSecret: process.env.GITHUB_SECRET,
+        profile(profile) {
+          return {
+            id: profile.id,
+            name: profile.name,
+            image: profile.avatar_url,
+            email: profile.email,
+            // Custom fields
+            emailVerified: null,
+            username: null,
+          };
+        },
       }),
     ],
-    adapter: Adapters.TypeORM.Adapter(process.env.MONGO_URI, {
-      models: {
-        User: Models.User,
-      },
-    }),
+    adapter: MongoDBAdapter({ db }),
     pages: {
       signIn: '/auth/access',
       newUser: '/auth/newUser',
     },
     callbacks: {
-      async session(session, user) {
-        // Note: session is the JWT payload
+      async jwt({ token, user }) {
         if (user) {
-          session.user.id = user.id;
+          return { ...token, id: `${user.id}` };
+        }
+
+        return token;
+      },
+      async session({ session, user, token }) {
+        if (token) {
+          session.user.id = token.id;
         }
 
         return session;
       },
-      async jwt(tokenPayload, user, account, profile, isNewUser) {
-        if (tokenPayload && user) {
-          return { ...tokenPayload, id: `${user.id}` };
-        }
-
-        return tokenPayload;
-      },
     },
   });
+};
 
 export default auth;

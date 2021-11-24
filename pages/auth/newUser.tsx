@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import {

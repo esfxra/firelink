@@ -1,5 +1,11 @@
-import { Db } from 'mongodb';
-import { nanoid } from 'nanoid';
+import { Db, ObjectId } from 'mongodb';
+
+const convertToSerializable = (link: any) => {
+  return {
+    ...link,
+    _id: link._id.toString(),
+  };
+};
 
 /**
  * @todo Use a sort query instead of reversing the array once received
@@ -10,22 +16,19 @@ export async function getLinksByUserID(db: Db, userID: string) {
     .find({ createdBy: userID })
     .toArray();
 
-  return links.reverse();
+  const serializedLinks = links.map((link) => convertToSerializable(link));
+
+  return serializedLinks.reverse();
 }
 
 export async function createLink(db: Db, link: {}) {
-  const newLink = await db
-    .collection('links')
-    .insertOne({
-      _id: nanoid(),
-      ...link,
-      published: false,
-      createdAt: new Date().toDateString(),
-      updatedAt: new Date().toDateString(),
-    })
-    .then(({ ops }) => ops[0]);
+  const result = await db.collection('links').insertOne({
+    ...link,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
 
-  return newLink;
+  return { insertedId: result.insertedId.toString() };
 }
 
 export async function updateLink(db: Db, id: string, updates: {}) {
@@ -33,8 +36,8 @@ export async function updateLink(db: Db, id: string, updates: {}) {
   await db
     .collection('links')
     .updateOne(
-      { _id: id },
-      { $set: { ...updates, updatedAt: new Date().toDateString() } }
+      { _id: ObjectId.createFromHexString(id) },
+      { $set: { ...updates, updatedAt: new Date().toISOString() } }
     );
 
   const updatedLink = await db.collection('links').findOne({ _id: id });
@@ -42,5 +45,7 @@ export async function updateLink(db: Db, id: string, updates: {}) {
 }
 
 export async function deleteLink(db: Db, id: string) {
-  return await db.collection('links').deleteOne({ _id: id });
+  return await db
+    .collection('links')
+    .deleteOne({ _id: ObjectId.createFromHexString(id) });
 }

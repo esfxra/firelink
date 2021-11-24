@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-import { signIn, useSession } from 'next-auth/client';
+import { signIn, useSession } from 'next-auth/react';
 import {
   Flex,
   Heading,
@@ -17,7 +17,7 @@ import {
  * @todo Consider login with email+username credentials
  */
 export default function Access() {
-  const [session, _] = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   useEffect(() => {

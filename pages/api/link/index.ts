@@ -15,13 +15,14 @@ const handler = nc<Request, NextApiResponse>({ onError });
 handler.use(middleware);
 
 handler.post(async (req, res) => {
-  const newLink = await createLink(req.db, {
+  const { insertedId } = await createLink(req.db, {
     url: req.body.url,
     title: req.body.title,
+    published: req.body.published,
     createdBy: req.user.id,
   });
 
-  res.send({ data: newLink });
+  res.json({ insertedId });
 });
 
 export default handler;
