@@ -1,4 +1,4 @@
-import { Db, ObjectID } from 'mongodb';
+import { Db, ObjectId } from 'mongodb';
 
 const convertToSerializable = (user: any) => {
   return {
@@ -20,7 +20,7 @@ export async function getUsers(db: Db) {
 export async function getUserById(db: Db, id: string) {
   const user = await db
     .collection('users')
-    .findOne({ _id: ObjectID.createFromHexString(id) });
+    .findOne({ _id: ObjectId.createFromHexString(id) });
 
   return convertToSerializable(user);
 }
@@ -39,7 +39,7 @@ export async function updateUsername(db: Db, id: string, username: string) {
   await db
     .collection('users')
     .updateOne(
-      { _id: ObjectID.createFromHexString(id) },
-      { $set: { ...{ username }, updatedAt: new Date().toDateString() } }
+      { _id: ObjectId.createFromHexString(id) },
+      { $set: { ...{ username }, updatedAt: new Date().toISOString() } }
     );
 }

@@ -53,21 +53,21 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
         </GridItem>
 
         {/* Delete */}
-        <DeleteIcon
-          justifySelf="end"
-          alignSelf="center"
-          cursor="pointer"
-          color="blackAlpha"
-        />
-        {/* <Button
+        <Button
           colorScheme="blackAlpha"
           justifySelf="end"
           alignSelf="center"
           size="sm"
           onClick={() => deleteLink(link._id)}
         >
+          <DeleteIcon
+            justifySelf="end"
+            alignSelf="center"
+            cursor="pointer"
+            color="blackAlpha"
+          />
           DELETE
-        </Button> */}
+        </Button>
       </Grid>
     </Box>
   );

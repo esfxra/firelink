@@ -158,6 +158,8 @@ export async function getServerSideProps(context) {
 
   const links = await getLinksByUserID(db, session.user.id);
 
+  console.log(links);
+
   return {
     props: { user, links },
   };

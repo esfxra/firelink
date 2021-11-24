@@ -13,7 +13,14 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
   const [links, setLinks] = useState(initialLinks);
 
   const addLink = async () => {
-    const data = await postLinkToDB(userID);
+    const newLink = {
+      url: '',
+      title: '',
+      published: false,
+    };
+
+    const { insertedId } = await postLinkToDB(newLink);
+    console.log(insertedId);
     /**
      * Reset all links
      * @note This merges the previous state with the new one;
@@ -22,7 +29,7 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
      *
      * @note Merging in such a way so that the new link is at the top of the array.
      */
-    setLinks((state) => [{ ...data }, ...state]);
+    setLinks((state) => [{ _id: insertedId, ...newLink }, ...state]);
     onChange();
   };
 
@@ -77,17 +84,16 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
 /**
  * DB requests
  */
-async function postLinkToDB(userID: string) {
+async function postLinkToDB(newLink: Partial<Link>) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/link/`, {
     method: 'POST',
-    body: JSON.stringify({ url: '', title: '', createdBy: userID }),
+    body: JSON.stringify(newLink),
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  const { data } = await res.json();
-  return data;
+  return await res.json();
 }
 
 async function deleteLinkFromDB(linkID: string) {
