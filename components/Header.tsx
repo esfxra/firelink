@@ -26,17 +26,23 @@ const AdminButton = ({ session, router }) => {
   return null;
 };
 
-const AccessButton = ({ session, router }) => {
-  if (!session && router.pathname !== '/auth/access') {
+function SignInButton({ session, router }) {
+  if (!session) {
     return (
-      <NextLink href="/auth/access">
+      <NextLink href="/auth/signin">
         <Link>
           <Button
-            color="white"
-            bgGradient="linear(to-r, red.500, orange.500)"
-            _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+            color="red.500"
+            borderWidth="1px"
+            borderColor="red.500"
+            backgroundColor="transparent"
+            _hover={{
+              color: 'red.600',
+              borderColor: 'red.600',
+              backgroundColor: 'transparent',
+            }}
           >
-            Access
+            Sign in
           </Button>
         </Link>
       </NextLink>
@@ -44,7 +50,25 @@ const AccessButton = ({ session, router }) => {
   }
 
   return null;
-};
+}
+
+function SignUpButton({ session, router }) {
+  if (!session) {
+    return (
+      <NextLink href="/auth/signup">
+        <Link>
+          <Button
+            color="white"
+            bgGradient="linear(to-r, red.500, orange.500)"
+            _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+          >
+            Sign up
+          </Button>
+        </Link>
+      </NextLink>
+    );
+  }
+}
 
 const SignOutButton = ({ session }) => {
   if (session) {
@@ -84,7 +108,8 @@ export default function Header({ title }: Props) {
 
       <HStack>
         <SignOutButton session={session} />
-        <AccessButton session={session} router={router} />
+        <SignInButton session={session} router={router} />
+        <SignUpButton session={session} router={router} />
         <AdminButton session={session} router={router} />
       </HStack>
     </Flex>

@@ -1,11 +1,13 @@
 import NextAuth from 'next-auth';
 import GiHubProvider from 'next-auth/providers/github';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 
 import { connectToDB } from '../../../db/connect';
+import { authenticateUser } from '../../../db/user';
 
 /**
- * @todo Add more providers, and consider standard username-password credentials
+ * @todo Add GitLab provider
  */
 const auth = async (req, res) => {
   const { db } = await connectToDB();
@@ -34,21 +36,42 @@ const auth = async (req, res) => {
           };
         },
       }),
+      CredentialsProvider({
+        async authorize(credentials) {
+          try {
+            const { success, data } = await authenticateUser(
+              db,
+              credentials.username,
+              credentials.password
+            );
+
+            if (!success) {
+              return null;
+            }
+
+            return data;
+          } catch (error) {
+            console.error(error);
+            return null;
+          }
+        },
+      }),
     ],
     adapter: MongoDBAdapter({ db }),
     pages: {
-      signIn: '/auth/access',
+      signIn: '/auth/signin',
       newUser: '/auth/newUser',
     },
     callbacks: {
       async jwt({ token, user }) {
         if (user) {
-          return { ...token, id: `${user.id}` };
+          const userId = user._id ? user._id : user.id;
+          return { ...token, id: `${userId}` };
         }
 
         return token;
       },
-      async session({ session, user, token }) {
+      async session({ session, token }) {
         if (token) {
           session.user.id = token.id;
         }

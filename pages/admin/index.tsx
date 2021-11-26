@@ -49,7 +49,7 @@ export default function Admin({ user, links }: Props) {
    * in case the session expires before a page reload.
    *
    * - Do not show anything while we wait for the session to be ready.
-   * - Refer to the /access page if the session has expired or does not exist.
+   * - Refer to the /signin page if the session has expired or does not exist.
    */
   if (loading) {
     return null;
@@ -59,7 +59,7 @@ export default function Admin({ user, links }: Props) {
     return (
       <Box>
         <p>You are not authenticated.</p>
-        <NextLink href="/auth/access" passHref>
+        <NextLink href="/auth/signin" passHref>
           <Link>
             <Button>Log in</Button>
           </Link>
@@ -135,7 +135,7 @@ export async function getServerSideProps(context) {
   if (!session) {
     return {
       redirect: {
-        destination: '/auth/access',
+        destination: '/auth/signin',
         permanent: false,
       },
     };
@@ -145,6 +145,7 @@ export async function getServerSideProps(context) {
    * @todo Handle errors from DB calls.
    */
   const { db } = await connectToDB();
+  console.log(session);
   const user = await getUserById(db, session.user.id);
 
   if (user.username === null) {

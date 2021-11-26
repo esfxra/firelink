@@ -1,13 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Db, MongoClient } from 'mongodb';
 import nc from 'next-connect';
+
+import db from '../../../middleware/db';
 import middleware from '../../../middleware/all';
 import onError from '../../../middleware/error';
-import {
-  getUserById,
-  getUserByUsername,
-  updateUsername,
-} from '../../../db/user';
+import { getUserByUsername, updateUsername } from '../../../db/user';
 
 interface Request extends NextApiRequest {
   db: Db;
@@ -16,9 +14,8 @@ interface Request extends NextApiRequest {
 }
 
 const handler = nc<Request, NextApiResponse>({ onError });
-handler.use(middleware);
 
-handler.get(async (req, res) => {
+handler.get(db, async (req, res) => {
   if (req.query.user[0] !== 'username' || !req.query.user[1]) {
     res.status(400).json({ success: false, message: 'Invalid query' });
     return;
@@ -35,7 +32,7 @@ handler.get(async (req, res) => {
   return;
 });
 
-handler.put(async (req, res) => {
+handler.put(middleware, async (req, res) => {
   if (req.query.user[0] !== 'id') {
     res.status(400).send({ success: false, message: 'Invalid query' });
   }

@@ -31,8 +31,8 @@ export default function Custom404() {
 
         <p style={{ marginBottom: 0 }}>
           Or{' '}
-          <Link href="/access">
-            <a style={{ color: 'var(--accent)' }}>create an account</a>
+          <Link href="/auth/signup">
+            <a style={{ color: 'var(--accent)' }}>sign up</a>
           </Link>
           .
         </p>

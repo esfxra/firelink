@@ -1,11 +1,12 @@
 import { Db, ObjectId } from 'mongodb';
+import argon2 from 'argon2';
 
 const convertToSerializable = (user: any) => {
   return {
     _id: user._id.toString(),
     username: user.username,
-    name: user.name,
-    image: user.image,
+    name: user.name ? user.name : '',
+    image: user.image ? user.name : '',
   };
 };
 
@@ -26,13 +27,63 @@ export async function getUserById(db: Db, id: string) {
 }
 
 export async function getUserByUsername(db: Db, username: string) {
-  const user = await db.collection('users').findOne({ username: username });
+  try {
+    const user = await db.collection('users').findOne({ username: username });
 
-  if (!user) {
+    if (!user) {
+      return { success: false, data: null };
+    }
+
+    return { success: true, data: convertToSerializable(user) };
+  } catch (error) {
+    console.error(error);
     return { success: false, data: null };
   }
+}
 
-  return { success: true, data: convertToSerializable(user) };
+export async function createUser(db: Db, username: string, password: string) {
+  try {
+    // Hash the password with argon2
+    const hashedPassword = await argon2.hash(password);
+
+    // Insert the document with the db driver
+    const result = await db
+      .collection('users')
+      .insertOne({ username, password: hashedPassword });
+
+    // Return the result
+    // TODO: Properly check if the document was inserted
+    return { success: true, insertedId: result.insertedId };
+  } catch (error) {
+    console.error(error);
+    return { success: false, data: null };
+  }
+}
+
+export async function authenticateUser(
+  db: Db,
+  username: string,
+  password: string
+) {
+  try {
+    const user = await db.collection('users').findOne({ username: username });
+
+    if (!user) {
+      return { success: false, data: null };
+    }
+
+    // Compare credentials
+    // Verify the password with argon2
+    const passwordMatch = await argon2.verify(user.password, password);
+    if (user.username === username && passwordMatch) {
+      return { success: true, data: convertToSerializable(user) };
+    }
+
+    return { success: false, data: null };
+  } catch (error) {
+    console.error(error);
+    return { success: false, data: null };
+  }
 }
 
 export async function updateUsername(db: Db, id: string, username: string) {
