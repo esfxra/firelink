@@ -1,15 +1,16 @@
-import React from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
-import { Flex, Heading, Link, Button, HStack } from '@chakra-ui/react';
+import { Flex, Link, Button, HStack } from '@chakra-ui/react';
 
-interface Props {
+import Logo from './Logo';
+
+interface HeaderProps {
   title: string;
 }
 
-const AdminButton = ({ session, router }) => {
+function AdminButton({ session, router }) {
   if (session && router.pathname !== '/admin') {
     return (
       <Button
@@ -24,7 +25,7 @@ const AdminButton = ({ session, router }) => {
   }
 
   return null;
-};
+}
 
 function SignInButton({ session }) {
   if (!session) {
@@ -72,7 +73,7 @@ function SignUpButton({ session }) {
   return null;
 }
 
-const SignOutButton = ({ session }) => {
+function SignOutButton({ session }) {
   if (session) {
     return (
       <Button
@@ -86,12 +87,12 @@ const SignOutButton = ({ session }) => {
   }
 
   return null;
-};
+}
 
 /**
  * A header to be used from home, and from admin
  */
-export default function Header({ title }: Props) {
+export default function Header({ title }: HeaderProps) {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -101,13 +102,7 @@ export default function Header({ title }: Props) {
         <title>{title}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <NextLink href="/" passHref>
-        <Link>
-          <Heading as="h1">campfire</Heading>
-        </Link>
-      </NextLink>
-
+      <Logo />
       <HStack>
         <SignOutButton session={session} />
         <SignInButton session={session} />
