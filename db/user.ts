@@ -51,12 +51,30 @@ export async function createUser(db: Db, username: string, password: string) {
       .collection('users')
       .insertOne({ username, password: hashedPassword });
 
-    // Return the result
-    // TODO: Properly check if the document was inserted
-    return { success: true, insertedId: result.insertedId };
+    // Return success status and data if aknowledged by db
+    if (result.acknowledged) {
+      return {
+        success: true,
+        data: {
+          insertedId: result.insertedId,
+        },
+      };
+    }
+
+    // Return failure status
+    return {
+      success: false,
+      data: null,
+    };
   } catch (error) {
+    // Log the error
     console.error(error);
-    return { success: false, data: null };
+
+    // Return failure status
+    return {
+      success: false,
+      data: null,
+    };
   }
 }
 
@@ -87,10 +105,24 @@ export async function authenticateUser(
 }
 
 export async function updateUsername(db: Db, id: string, username: string) {
-  await db
-    .collection('users')
-    .updateOne(
-      { _id: ObjectId.createFromHexString(id) },
-      { $set: { ...{ username }, updatedAt: new Date().toISOString() } }
-    );
+  try {
+    const result = await db
+      .collection('users')
+      .updateOne(
+        { _id: ObjectId.createFromHexString(id) },
+        { $set: { ...{ username }, updatedAt: new Date().toISOString() } }
+      );
+
+    return {
+      success: true,
+      data: { modifiedCount: result.modifiedCount },
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      success: false,
+      data: null,
+    };
+  }
 }

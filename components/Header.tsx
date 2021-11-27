@@ -26,7 +26,7 @@ const AdminButton = ({ session, router }) => {
   return null;
 };
 
-function SignInButton({ session, router }) {
+function SignInButton({ session }) {
   if (!session) {
     return (
       <NextLink href="/auth/signin">
@@ -52,7 +52,7 @@ function SignInButton({ session, router }) {
   return null;
 }
 
-function SignUpButton({ session, router }) {
+function SignUpButton({ session }) {
   if (!session) {
     return (
       <NextLink href="/auth/signup">
@@ -68,6 +68,8 @@ function SignUpButton({ session, router }) {
       </NextLink>
     );
   }
+
+  return null;
 }
 
 const SignOutButton = ({ session }) => {
@@ -78,7 +80,7 @@ const SignOutButton = ({ session }) => {
         variant="outline"
         onClick={() => signOut({ callbackUrl: '/' })}
       >
-        Log out
+        Sign out
       </Button>
     );
   }
@@ -108,8 +110,8 @@ export default function Header({ title }: Props) {
 
       <HStack>
         <SignOutButton session={session} />
-        <SignInButton session={session} router={router} />
-        <SignUpButton session={session} router={router} />
+        <SignInButton session={session} />
+        <SignUpButton session={session} />
         <AdminButton session={session} router={router} />
       </HStack>
     </Flex>

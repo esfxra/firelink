@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
   Heading,
@@ -17,19 +20,50 @@ import {
 // &#8594;
 
 export default function SignIn() {
-  // const { data: session } = useSession();
-  // const router = useRouter();
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  // useEffect(() => {
-  //   // Redirect users to admin if an active session exists
-  //   if (session) {
-  //     router.push('/admin');
-  //   }
-  // });
+  // TODO: Do not show the signIn page while loading the session
+  useEffect(() => {
+    // Redirect users to admin if an active session exists
+    if (session) {
+      router.push('/admin');
+    }
+  });
 
-  // const handleGitHub = () => {
-  //   signIn('github');
-  // };
+  function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setUsername(event.target.value);
+  }
+
+  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setPassword(event.target.value);
+  }
+
+  function handleGitHubSignin() {
+    signIn('github', {
+      callbackUrl: '/admin',
+    });
+  }
+
+  async function handleCredentialsSignin() {
+    const result = await signIn('credentials', {
+      redirect: false,
+      username,
+      password,
+    });
+
+    if (result.error) {
+      // TODO: Handle ERROR here
+      console.error(result.error);
+      return;
+    }
+
+    if (result.ok) {
+      router.push('/admin');
+    }
+  }
 
   return (
     <Flex h="100vh">
@@ -45,18 +79,24 @@ export default function SignIn() {
             <Heading as="h2">Sign in</Heading>
             {/* Sign in with OAuth provider */}
             <VStack mt={5} spacing={3}>
-              <Button isFullWidth>Continue with GitHub</Button>
-              <Button isFullWidth>Continue with GitLab</Button>
+              <Button isFullWidth onClick={handleGitHubSignin}>
+                Continue with GitHub
+              </Button>
+              <Button isFullWidth disabled>
+                Continue with GitLab
+              </Button>
             </VStack>
 
             <Divider mt={5} mb={5} />
 
             {/* Sign in with username */}
             <FormLabel mb={1}>Username</FormLabel>
-            <Input mb={3} />
+            <Input mb={3} value={username} onChange={handleUsernameChange} />
             <FormLabel mb={1}>Password</FormLabel>
-            <Input mb={3} />
-            <Button isFullWidth>Sign in with username</Button>
+            <Input mb={3} value={password} onChange={handlePasswordChange} />
+            <Button isFullWidth onClick={handleCredentialsSignin}>
+              Sign in with username
+            </Button>
 
             <Divider mt={5} mb={5} />
 

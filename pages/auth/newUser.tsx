@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { connectToDB } from '../../db/connect';
@@ -15,26 +15,58 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-export default function NewUser({ session }) {
+export default function NewUser({ userId }) {
   const router = useRouter();
   const [username, setUsername] = useState('');
-  const [valid, setValid] = useState(false);
+  const [validUsername, setValidUsername] = useState(false);
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  async function handleUsernameChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     setUsername(event.target.value);
-    const { valid } = await validateUsername(event.target.value);
-    setValid(valid);
-  };
 
-  const submitUsername = async () => {
-    if (valid) {
-      const result = await postUsername(session.user.id, username);
+    // Make sure the user does not exist
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${event.target.value}`
+      );
 
+      const { success } = await res.json();
+      setValidUsername(!success);
+    } catch (error) {
+      console.error(error);
+      // TODO: Handle the error on the UI
+    }
+  }
+
+  async function handleUsernameSubmit() {
+    if (!validUsername) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_HOST}/api/user/id/${userId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        }
+      );
+
+      const result = await res.json();
       if (result.success) {
         router.push('/admin');
+      } else {
+        // TODO: Handle error on the UI
       }
+    } catch (error) {
+      console.error(error);
+      // TODO: Handle the error on the UI
     }
-  };
+  }
 
   return (
     <Flex
@@ -53,9 +85,9 @@ export default function NewUser({ session }) {
           <br /> where all your links will be available.
         </Text>
 
-        <Input mb={3} value={username} onChange={handleChange} />
+        <Input mb={3} value={username} onChange={handleUsernameChange} />
 
-        {!valid && username !== '' && (
+        {!handleUsernameSubmit && username !== '' && (
           <Alert status="error" rounded={5} mt={3} mb={3}>
             <AlertIcon />
             <AlertDescription>
@@ -64,7 +96,11 @@ export default function NewUser({ session }) {
           </Alert>
         )}
 
-        <Button width="100%" isDisabled={!valid} onClick={submitUsername}>
+        <Button
+          width="100%"
+          isDisabled={!validUsername}
+          onClick={handleUsernameSubmit}
+        >
           Submit
         </Button>
       </Box>
@@ -72,10 +108,10 @@ export default function NewUser({ session }) {
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: any) {
   const session = await getSession(context);
+  console.log('server-side session', session);
 
-  // Redirect the user to the login page if they are not logged in
   if (!session) {
     return {
       redirect: {
@@ -85,15 +121,10 @@ export async function getServerSideProps(context) {
     };
   }
 
+  // Check if the user already has an username
   const { db } = await connectToDB();
   const user = await getUserById(db, session.user.id);
 
-  /**
-   * Redirect the user to the admin page if they already have a username.
-   *
-   * @todo Consider adding username to session, but if you understand how to refresh a token.
-   * This would handle the case for which the user changes its username mid-session.
-   */
   if (user.username !== null) {
     return {
       redirect: {
@@ -104,39 +135,8 @@ export async function getServerSideProps(context) {
   }
 
   return {
-    props: { session },
+    props: {
+      userId: session.user.id,
+    },
   };
-}
-
-async function validateUsername(username) {
-  if (username.length < 3) {
-    return { valid: false };
-  }
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${username}`
-  );
-  const { success } = await res.json();
-
-  if (!success) {
-    return { valid: true };
-  }
-
-  return { valid: false };
-}
-
-async function postUsername(userID: string, username: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_HOST}/api/user/id/${userID}`,
-    {
-      method: 'PUT',
-      body: JSON.stringify(username),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-
-  const { success } = await res.json();
-  return { success };
 }

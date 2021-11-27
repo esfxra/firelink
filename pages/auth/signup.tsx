@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { useSession, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
   Heading,
@@ -38,6 +41,85 @@ function PerkList() {
 }
 
 export default function SignUp() {
+  const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [validUsername, setValidUsername] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
+
+  async function handleUsernameChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    setUsername(event.target.value);
+
+    // Make sure the user does not exist
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${event.target.value}`
+      );
+
+      const { success } = await res.json();
+      setValidUsername(!success);
+    } catch (error) {
+      console.error(error);
+      // TODO: Handle the error on the UI
+    }
+  }
+
+  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setPassword(event.target.value);
+
+    setValidPassword(event.target.value.length > 8);
+  }
+
+  async function handleUsernameSignup() {
+    if (!validUsername && !validPassword) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const result = await res.json();
+
+      console.log(result);
+      // TODO: Handle a successful sign up on the UI
+
+      if (result.success) {
+        const result = await signIn('credentials', {
+          redirect: false,
+          username,
+          password,
+        });
+
+        if (result.error) {
+          // TODO: Handle ERROR here
+          console.error(result.error);
+          return;
+        }
+
+        if (result.ok) {
+          router.push('/admin');
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      // TODO: Handle the error on the UI
+    }
+  }
+
+  function handleGitHubSignup() {
+    signIn('github', {
+      callbackUrl: '/admin',
+    });
+  }
+
   return (
     <Flex h="100vh">
       <Flex p={{ base: 5 }} flex={1} direction="column">
@@ -73,18 +155,36 @@ export default function SignUp() {
 
                 {/* Sign up with OAuth provider */}
                 <VStack mt={5} spacing={3}>
-                  <Button isFullWidth>Continue with GitHub</Button>
-                  <Button isFullWidth>Continue with GitLab</Button>
+                  <Button isFullWidth onClick={handleGitHubSignup}>
+                    Continue with GitHub
+                  </Button>
+                  <Button isFullWidth disabled>
+                    Continue with GitLab
+                  </Button>
                 </VStack>
 
                 <Divider mt={5} mb={5} />
 
                 {/* Sign up with username */}
                 <FormLabel mb={1}>Username</FormLabel>
-                <Input mb={3} />
+                <Input
+                  mb={3}
+                  value={username}
+                  onChange={handleUsernameChange}
+                />
                 <FormLabel mb={1}>Password</FormLabel>
-                <Input mb={3} />
-                <Button isFullWidth>Sign up with username</Button>
+                <Input
+                  mb={3}
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+                <Button
+                  isFullWidth
+                  disabled={!validUsername && !validPassword}
+                  onClick={handleUsernameSignup}
+                >
+                  Sign up with username
+                </Button>
 
                 <Divider mt={5} mb={5} />
 
