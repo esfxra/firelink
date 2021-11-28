@@ -1,50 +1,128 @@
-import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Link, FormLabel, Input, Button, Center, Box } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import {
+  Link,
+  FormLabel,
+  FormControl,
+  Input,
+  Button,
+  Center,
+  Box,
+  useToast,
+  useBoolean,
+} from '@chakra-ui/react';
+
 import SignInLayout from '../../../components/auth/SignInLayout';
 
+interface Inputs {
+  username: string;
+  password: string;
+}
+
+interface JSONApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
+async function attemptSignInRequest(
+  username: string,
+  password: string
+): Promise<JSONApiResponse<null>> {
+  const result = await signIn('credentials', {
+    redirect: false,
+    username,
+    password,
+  });
+
+  if (result.error) {
+    return { success: false, data: null };
+  }
+
+  if (result.ok) {
+    return { success: true, data: null };
+  }
+}
+
+// TODO: Implement cooldown after X erronous attempts have been made
 export default function SignInWithUsername() {
+  const { register, handleSubmit, reset } = useForm<Inputs>();
   const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useBoolean(false);
 
-  function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setUsername(event.target.value);
-  }
+  async function onSubmit(data: Inputs) {
+    console.log('hi');
+    setIsLoading.on();
+    const signInResult = await attemptSignInRequest(
+      data.username,
+      data.password
+    );
 
-  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(event.target.value);
-  }
-
-  async function handleUsernameSignin() {
-    const result = await signIn('credentials', {
-      redirect: false,
-      username,
-      password,
-    });
-
-    if (result.error) {
-      // TODO: Handle ERROR here
-      console.error(result.error);
+    // Handle API user sign in failure
+    if (!signInResult.success) {
+      setIsLoading.off();
+      toast({
+        title: 'Sign in unsuccessful.',
+        description: 'Please try again.',
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      });
+      reset();
       return;
     }
 
-    if (result.ok) {
-      router.push('/admin');
-    }
+    // Send the user to the admin dashboard for successful sign ins
+    router.push('/admin');
   }
 
   return (
     <Box mt={5}>
-      <FormLabel mb={1}>Username</FormLabel>
-      <Input mb={3} value={username} onChange={handleUsernameChange} />
-      <FormLabel mb={1}>Password</FormLabel>
-      <Input mb={3} value={password} onChange={handlePasswordChange} />
-      <Button isFullWidth onClick={handleUsernameSignin}>
-        Sign in with username
-      </Button>
+      {/* <FormLabel mb={1}>Username</FormLabel>
+      <Input mb={3} value={username} onChange={handleUsernameChange} /> */}
+      <form
+        id="signinForm"
+        onSubmit={handleSubmit(async (data) => await onSubmit(data))}
+      >
+        {/* Username */}
+        <FormControl mb={3}>
+          <FormLabel mt={0} mb={2} id="usernameLabel" htmlFor="username">
+            Username
+          </FormLabel>
+
+          <Input
+            id="username"
+            type="text"
+            {...register('username', {
+              required: true,
+            })}
+          />
+        </FormControl>
+        {/* Password */}
+        <FormControl mb={3}>
+          <FormLabel mt={0} mb={2} id="passwordLabel" htmlFor="password">
+            Password
+          </FormLabel>
+          <Input
+            id="password"
+            type="password"
+            {...register('password', {
+              required: true,
+            })}
+          />
+        </FormControl>
+
+        <Button
+          isLoading={isLoading}
+          loadingText="Signing you in"
+          type="submit"
+          isFullWidth
+        >
+          Sign in with username
+        </Button>
+      </form>
       <Center mt={5}>
         <NextLink href="/auth/signin/" passHref>
           <Link

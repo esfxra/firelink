@@ -1,98 +1,230 @@
-import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Link, FormLabel, Input, Button, Center, Box } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import {
+  Link,
+  FormLabel,
+  FormControl,
+  FormErrorMessage,
+  Input,
+  Button,
+  Center,
+  Flex,
+  Box,
+  useToast,
+  useBoolean,
+} from '@chakra-ui/react';
 
 import SignUpLayout from '../../../components/auth/SignUpLayout';
 
-export default function SignUpWithUsername() {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [validUsername, setValidUsername] = useState(false);
-  const [validPassword, setValidPassword] = useState(false);
+interface Inputs {
+  username: string;
+  password: string;
+}
 
-  async function handleUsernameChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setUsername(event.target.value);
+interface JSONApiResponse<T> {
+  success: boolean;
+  data: T;
+}
 
-    // Make sure the user does not exist
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${event.target.value}`
-      );
+async function checkUsernameAvailability(username: string) {
+  try {
+    // Check if the username exists
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${username}`
+    );
 
-      const { success } = await res.json();
-      setValidUsername(!success);
-    } catch (error) {
-      console.error(error);
-      // TODO: Handle the error on the UI
+    // Handle results, and return strings compatible with react-hook-form's error system
+    const { success } = (await res.json()) as JSONApiResponse<null>;
+    if (success) {
+      return 'Username is already taken';
+    } else {
+      return true;
     }
+  } catch (error) {
+    console.error(error);
+    return 'An error occurred';
+  }
+}
+
+async function fetchSignUpRequest(
+  username: string,
+  password: string
+): Promise<JSONApiResponse<null>> {
+  try {
+    // Sign the user up
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    // Return result
+    const { success } = (await res.json()) as JSONApiResponse<null>;
+
+    return { success, data: null };
+  } catch (error) {
+    return { success: false, data: null };
+  }
+}
+
+async function attemptSignInRequest(
+  username: string,
+  password: string
+): Promise<JSONApiResponse<null>> {
+  const result = await signIn('credentials', {
+    redirect: false,
+    username,
+    password,
+  });
+
+  if (result.error) {
+    return { success: false, data: null };
   }
 
-  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(event.target.value);
-
-    setValidPassword(event.target.value.length > 8);
+  if (result.ok) {
+    return { success: true, data: null };
   }
+}
 
-  async function handleUsernameSignup() {
-    if (!validUsername && !validPassword) {
+export default function SignUpWithUsername() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>({ mode: 'onChange' });
+  const router = useRouter();
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useBoolean(false);
+
+  async function onSubmit(data: Inputs) {
+    setIsLoading.on();
+    const signUpResult = await fetchSignUpRequest(data.username, data.password);
+
+    // Handle API user sign up failure
+    if (!signUpResult.success) {
+      setIsLoading.off();
+      toast({
+        title: 'An error occurred.',
+        description: 'We could not create your account.',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+      reset();
       return;
     }
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+    // Sign the user in
+    const signInResult = await attemptSignInRequest(
+      data.username,
+      data.password
+    );
 
-      const result = await res.json();
-
-      console.log(result);
-      // TODO: Handle a successful sign up on the UI
-
-      if (result.success) {
-        const result = await signIn('credentials', {
-          redirect: false,
-          username,
-          password,
-        });
-
-        if (result.error) {
-          // TODO: Handle ERROR here
-          console.error(result.error);
-          return;
-        }
-
-        if (result.ok) {
-          router.push('/admin');
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      // TODO: Handle the error on the UI
+    // Handle API user sign in failure
+    if (!signInResult.success) {
+      /**
+       * Send the user to the sign in page.
+       * This considers the fact at this point the account has been created.
+       * There are safeguards in place that prevent reaching this point without creating an account.
+       */
+      router.push('/auth/signin');
+      return;
     }
+
+    // Send the user to the admin dashboard for successful sign ins
+    router.push('/admin');
   }
 
   return (
     <Box mt={5}>
-      <FormLabel mb={1}>Username</FormLabel>
-      <Input mb={3} value={username} onChange={handleUsernameChange} />
-      <FormLabel mb={1}>Password</FormLabel>
-      <Input mb={3} value={password} onChange={handlePasswordChange} />
-      <Button
-        isFullWidth
-        disabled={!validUsername && !validPassword}
-        onClick={handleUsernameSignup}
+      <form
+        id="signupForm"
+        onSubmit={handleSubmit(async (data) => await onSubmit(data))}
       >
-        Sign up with username
-      </Button>
+        {/* Username */}
+        <FormControl mb={3} isInvalid={!!errors.username}>
+          <Flex
+            mb={2}
+            align="center"
+            alignContent="center"
+            justify="space-between"
+          >
+            <FormLabel m={0} id="usernameLabel" htmlFor="username">
+              Username
+            </FormLabel>
+            {errors.username && (
+              <FormErrorMessage m={0}>
+                {errors.username.message}
+              </FormErrorMessage>
+            )}
+          </Flex>
+          <Input
+            id="username"
+            type="text"
+            {...register('username', {
+              required: 'This is required',
+              minLength: {
+                value: 4,
+                message: 'Must be at least 4 characters',
+              },
+              maxLength: {
+                value: 14,
+                message: 'Must be at most 14 characters',
+              },
+              validate: {
+                availability: checkUsernameAvailability,
+              },
+            })}
+          />
+        </FormControl>
+        {/* Password */}
+        <FormControl mb={3} isInvalid={!!errors.password}>
+          <Flex
+            mb={2}
+            align="center"
+            alignContent="center"
+            justify="space-between"
+          >
+            <FormLabel m={0} id="passwordLabel" htmlFor="password">
+              Password
+            </FormLabel>
+            {errors.password && (
+              <FormErrorMessage m={0}>
+                {errors.password.message}
+              </FormErrorMessage>
+            )}
+          </Flex>
+          <Input
+            id="password"
+            type="password"
+            {...register('password', {
+              required: 'This is required',
+              minLength: {
+                value: 8,
+                message: 'Must be at least 8 characters',
+              },
+              maxLength: {
+                value: 14,
+                message: 'Must be at most 14 characters',
+              },
+            })}
+          />
+        </FormControl>
+        <Button
+          isLoading={isLoading}
+          loadingText="Signing you up"
+          type="submit"
+          isFullWidth
+        >
+          Sign up with username
+        </Button>
+      </form>
+
       <Center mt={5}>
         <NextLink href="/auth/signup/" passHref>
           <Link
