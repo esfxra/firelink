@@ -20,7 +20,7 @@ export default function AuthProviders() {
   const [isLoadingGitLab, setIsLoadingGitLab] = useBoolean(false);
 
   return (
-    <VStack mt={5} spacing={3}>
+    <VStack spacing={3}>
       <Button
         isLoading={isLoadingGitHub}
         loadingText="Signing in with GitHub"
