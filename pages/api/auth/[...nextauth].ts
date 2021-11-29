@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-import GiHubProvider from 'next-auth/providers/github';
+import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 
@@ -21,7 +21,7 @@ const auth = async (req, res) => {
       secret: process.env.JWT_SECRET,
     },
     providers: [
-      GiHubProvider({
+      GitHubProvider({
         clientId: process.env.GITHUB_ID,
         clientSecret: process.env.GITHUB_SECRET,
         profile(profile) {
@@ -37,18 +37,21 @@ const auth = async (req, res) => {
         },
       }),
       CredentialsProvider({
+        credentials: {
+          username: {},
+          password: {},
+        },
         async authorize(credentials) {
+          // Return
           try {
             const { success, data } = await authenticateUser(
               db,
               credentials.username,
               credentials.password
             );
-
             if (!success) {
               return null;
             }
-
             return data;
           } catch (error) {
             console.error(error);
@@ -73,7 +76,7 @@ const auth = async (req, res) => {
       },
       async session({ session, token }) {
         if (token) {
-          session.user.id = token.id;
+          session.user.id = token.userId;
         }
 
         return session;
