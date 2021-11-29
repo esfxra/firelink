@@ -69,7 +69,7 @@ const auth = async (req, res) => {
       async jwt({ token, user }) {
         if (user) {
           const userId = user._id ? user._id : user.id;
-          return { ...token, id: `${userId}` };
+          return { ...token, userId: `${userId}` };
         }
 
         return token;
