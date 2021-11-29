@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
+import GitLabProvider from 'next-auth/providers/gitlab';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 
@@ -24,6 +25,21 @@ const auth = async (req, res) => {
       GitHubProvider({
         clientId: process.env.GITHUB_ID,
         clientSecret: process.env.GITHUB_SECRET,
+        profile(profile) {
+          return {
+            id: profile.id,
+            name: profile.name,
+            image: profile.avatar_url,
+            email: profile.email,
+            // Custom fields
+            emailVerified: null,
+            username: null,
+          };
+        },
+      }),
+      GitLabProvider({
+        clientId: process.env.GITLAB_ID,
+        clientSecret: process.env.GITLAB_SECRET,
         profile(profile) {
           return {
             id: profile.id,

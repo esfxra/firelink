@@ -8,11 +8,9 @@ function handleGitHubAuth() {
 }
 
 function handleGitLabAuth() {
-  // TODO: Implement in auth API
-  // signIn('gitlab', {
-  //   callbackUrl: '/admin',
-  // });
-  return;
+  signIn('gitlab', {
+    callbackUrl: '/admin',
+  });
 }
 
 export default function AuthProviders() {
@@ -36,7 +34,6 @@ export default function AuthProviders() {
         isLoading={isLoadingGitLab}
         loadingText="Signing in with GitLab"
         isFullWidth
-        disabled
         onClick={() => {
           setIsLoadingGitLab.on();
           handleGitLabAuth();
