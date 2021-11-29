@@ -16,7 +16,7 @@ import {
 
 import SignInLayout from '../../../components/auth/SignInLayout';
 
-import { AuthApiResponse, Inputs } from '../auth.types';
+import { AuthApiResponse, Inputs } from '../../../components/auth/auth.types';
 
 async function attemptSignInRequest(
   username: string,

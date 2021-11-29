@@ -18,7 +18,7 @@ import {
 
 import SignUpLayout from '../../../components/auth/SignUpLayout';
 
-import { Inputs, AuthApiResponse } from '../auth.types';
+import { Inputs, AuthApiResponse } from '../../../components/auth/auth.types';
 
 async function checkUsernameAvailability(username: string) {
   try {

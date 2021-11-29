@@ -17,7 +17,7 @@ import NewUserLayout from '../../components/auth/NewUserLayout';
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 
-import { AuthApiResponse } from './auth.types';
+import { AuthApiResponse } from '../../components/auth/auth.types';
 import router from 'next/router';
 
 function URLTemplate() {
