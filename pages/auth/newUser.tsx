@@ -1,116 +1,120 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
-import { connectToDB } from '../../db/connect';
-import { getUserById } from '../../db/user';
+import { useForm } from 'react-hook-form';
 import {
-  Alert,
-  AlertIcon,
-  AlertDescription,
-  Flex,
-  Box,
-  Heading,
   Text,
-  Input,
+  FormErrorMessage,
+  FormControl,
   Button,
+  Input,
+  InputLeftElement,
+  InputGroup,
+  Box,
+  useToast,
+  useBoolean,
 } from '@chakra-ui/react';
 
+import NewUserLayout from '../../components/auth/NewUserLayout';
+import { connectToDB } from '../../db/connect';
+import { getUserById } from '../../db/user';
+
+import { AuthApiResponse } from './auth.types';
+import router from 'next/router';
+
+function URLTemplate() {
+  return (
+    <Text
+      fontWeight="600"
+      bgGradient="linear(to-r, red.500, orange.500)"
+      bgClip="text"
+    >
+      firelink.vercel.app/
+    </Text>
+  );
+}
+
+/**
+ * This page is used to allow accounts created with providers to register usernames.
+ */
 export default function NewUser({ userId }) {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [validUsername, setValidUsername] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ username: string }>({ mode: 'onChange' });
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useBoolean(false);
 
-  async function handleUsernameChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setUsername(event.target.value);
+  async function onSubmit(data: { username: string }) {
+    setIsLoading.on();
+    const { success } = await registerUsername(userId, data.username);
 
-    // Make sure the user does not exist
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${event.target.value}`
-      );
-
-      const { success } = await res.json();
-      setValidUsername(!success);
-    } catch (error) {
-      console.error(error);
-      // TODO: Handle the error on the UI
-    }
-  }
-
-  async function handleUsernameSubmit() {
-    if (!validUsername) {
-      return;
-    }
-
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_HOST}/api/user/id/${userId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username }),
-        }
-      );
-
-      const result = await res.json();
-      if (result.success) {
-        router.push('/admin');
-      } else {
-        // TODO: Handle error on the UI
-      }
-    } catch (error) {
-      console.error(error);
-      // TODO: Handle the error on the UI
+    if (success) {
+      router.push('/admin');
+    } else {
+      setIsLoading.off();
+      toast({
+        title: 'An error occurred.',
+        description: 'We could not register this username.',
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      });
     }
   }
 
   return (
-    <Flex
-      height="100vh"
-      justifyContent="center"
-      alignItems="center"
-      backgroundColor="gray.50"
-    >
-      <Box padding={8} boxShadow="2xl" rounded={10} backgroundColor="white">
-        <Heading as="h1" mb={3}>
-          Pick a username
-        </Heading>
-
-        <Text mb={3}>
-          This will be the handle for your campfire,
-          <br /> where all your links will be available.
-        </Text>
-
-        <Input mb={3} value={username} onChange={handleUsernameChange} />
-
-        {!handleUsernameSubmit && username !== '' && (
-          <Alert status="error" rounded={5} mt={3} mb={3}>
-            <AlertIcon />
-            <AlertDescription>
-              Username is invalid or already exists
-            </AlertDescription>
-          </Alert>
-        )}
-
+    <Box mt={5}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl mb={3} isInvalid={!!errors.username}>
+          <InputGroup>
+            <InputLeftElement width="160px">
+              <URLTemplate />
+            </InputLeftElement>
+            <Input
+              pl="155px"
+              id="username"
+              type="text"
+              {...register('username', {
+                required: 'This is required',
+                minLength: {
+                  value: 4,
+                  message: 'Must be at least 4 characters',
+                },
+                maxLength: {
+                  value: 14,
+                  message: 'Must be at most 14 characters',
+                },
+                validate: {
+                  availability: checkUsernameAvailability,
+                },
+              })}
+            />
+          </InputGroup>
+          {errors.username && (
+            <FormErrorMessage mt={2}>
+              {errors.username.message}
+            </FormErrorMessage>
+          )}
+        </FormControl>
         <Button
-          width="100%"
-          isDisabled={!validUsername}
-          onClick={handleUsernameSubmit}
+          loadingText="Submitting"
+          type="submit"
+          isFullWidth
+          isLoading={isLoading}
         >
           Submit
         </Button>
-      </Box>
-    </Flex>
+      </form>
+    </Box>
   );
 }
 
+NewUser.getLayout = function getLayout(page) {
+  return <NewUserLayout>{page}</NewUserLayout>;
+};
+
 export async function getServerSideProps(context: any) {
   const session = await getSession(context);
-  console.log('server-side session', session);
 
   if (!session) {
     return {
@@ -139,4 +143,46 @@ export async function getServerSideProps(context: any) {
       userId: session.user.id,
     },
   };
+}
+
+async function checkUsernameAvailability(username: string) {
+  try {
+    // Check if the username exists
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/user/username/${username}`
+    );
+
+    // Handle results, and return strings compatible with react-hook-form's error system
+    const { success } = (await res.json()) as AuthApiResponse<null>;
+    if (success) {
+      return 'Username is already taken';
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.error(error);
+    return 'An error occurred';
+  }
+}
+
+async function registerUsername(userId: string, username: string) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_HOST}/api/user/id/${userId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }),
+      }
+    );
+
+    const { success } = (await res.json()) as AuthApiResponse<null>;
+    return { success };
+  } catch (error) {
+    // TODO: Handle the error on the UI
+    console.error(error);
+    return { success: false };
+  }
 }

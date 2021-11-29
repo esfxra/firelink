@@ -18,15 +18,7 @@ import {
 
 import SignUpLayout from '../../../components/auth/SignUpLayout';
 
-interface Inputs {
-  username: string;
-  password: string;
-}
-
-interface JSONApiResponse<T> {
-  success: boolean;
-  data: T;
-}
+import { Inputs, AuthApiResponse } from '../auth.types';
 
 async function checkUsernameAvailability(username: string) {
   try {
@@ -36,7 +28,7 @@ async function checkUsernameAvailability(username: string) {
     );
 
     // Handle results, and return strings compatible with react-hook-form's error system
-    const { success } = (await res.json()) as JSONApiResponse<null>;
+    const { success } = (await res.json()) as AuthApiResponse<null>;
     if (success) {
       return 'Username is already taken';
     } else {
@@ -51,7 +43,7 @@ async function checkUsernameAvailability(username: string) {
 async function fetchSignUpRequest(
   username: string,
   password: string
-): Promise<JSONApiResponse<null>> {
+): Promise<AuthApiResponse<null>> {
   try {
     // Sign the user up
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/user`, {
@@ -63,7 +55,7 @@ async function fetchSignUpRequest(
     });
 
     // Return result
-    const { success } = (await res.json()) as JSONApiResponse<null>;
+    const { success } = (await res.json()) as AuthApiResponse<null>;
 
     return { success, data: null };
   } catch (error) {
@@ -74,7 +66,7 @@ async function fetchSignUpRequest(
 async function attemptSignInRequest(
   username: string,
   password: string
-): Promise<JSONApiResponse<null>> {
+): Promise<AuthApiResponse<null>> {
   const result = await signIn('credentials', {
     redirect: false,
     username,
@@ -112,7 +104,7 @@ export default function SignUpWithUsername() {
         title: 'An error occurred.',
         description: 'We could not create your account.',
         status: 'error',
-        duration: 9000,
+        duration: 6000,
         isClosable: true,
       });
       reset();

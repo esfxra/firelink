@@ -16,20 +16,12 @@ import {
 
 import SignInLayout from '../../../components/auth/SignInLayout';
 
-interface Inputs {
-  username: string;
-  password: string;
-}
-
-interface JSONApiResponse<T> {
-  success: boolean;
-  data: T;
-}
+import { AuthApiResponse, Inputs } from '../auth.types';
 
 async function attemptSignInRequest(
   username: string,
   password: string
-): Promise<JSONApiResponse<null>> {
+): Promise<AuthApiResponse<null>> {
   const result = await signIn('credentials', {
     redirect: false,
     username,
