@@ -9,7 +9,11 @@ module.exports = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['localhost', 'avatars.githubusercontent.com'],
+    domains: [
+      'localhost',
+      'avatars.githubusercontent.com',
+      'secure.gravatar.com',
+    ],
   },
   swcMinify: true,
 };

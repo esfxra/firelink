@@ -1,8 +1,5 @@
 import Image from 'next/image';
 import NextLink from 'next/link';
-import { connectToDB } from '../db/connect';
-import { getUserByUsername } from '../db/user';
-import { getLinksByUserID } from '../db/link';
 import {
   Box,
   Center,
@@ -13,6 +10,10 @@ import {
   Text,
   Link,
 } from '@chakra-ui/react';
+
+import { connectToDB } from '../db/connect';
+import { getUserByUsername } from '../db/user';
+import { getLinksByUserID } from '../db/link';
 
 export default function User({ user, links }) {
   return (

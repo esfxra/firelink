@@ -6,7 +6,7 @@ const convertToSerializable = (user: any) => {
     _id: user._id.toString(),
     username: user.username,
     name: user.name ? user.name : '',
-    image: user.image ? user.name : '',
+    image: user.image ? user.image : '',
   };
 };
 
