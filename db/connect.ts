@@ -21,7 +21,7 @@ export const connectToDB = async () => {
     console.log('Connected to DB');
   }
 
-  const db: Db = global.mongo.client.db('campfire');
+  const db: Db = global.mongo.client.db(process.env.DB_NAME);
 
   return { db, dbClient: global.mongo.client };
 };

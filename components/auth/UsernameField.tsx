@@ -17,7 +17,6 @@ async function checkUsernameAvailability(username: string) {
       return true;
     }
   } catch (error) {
-    console.error(error);
     return 'An error occurred';
   }
 }

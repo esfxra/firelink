@@ -75,7 +75,7 @@ export default function User({ user, links }) {
         <Center>
           <NextLink href="/">
             <Link>
-              <Heading as="h1">campfire</Heading>
+              <Heading as="h1">firelink</Heading>
             </Link>
           </NextLink>
         </Center>

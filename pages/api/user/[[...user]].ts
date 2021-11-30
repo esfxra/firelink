@@ -72,7 +72,7 @@ handler.post(db, async (req, res) => {
       data,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
       data: {

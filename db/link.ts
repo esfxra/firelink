@@ -12,7 +12,7 @@ const convertToSerializable = (link: any) => {
  */
 export async function getLinksByUserID(db: Db, userID: string) {
   const links = await db
-    .collection('links')
+    .collection(process.env.DB_LINK_COLLECTION)
     .find({ createdBy: userID })
     .toArray();
 
@@ -22,7 +22,7 @@ export async function getLinksByUserID(db: Db, userID: string) {
 }
 
 export async function createLink(db: Db, link: {}) {
-  const result = await db.collection('links').insertOne({
+  const result = await db.collection(process.env.DB_LINK_COLLECTION).insertOne({
     ...link,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -34,18 +34,20 @@ export async function createLink(db: Db, link: {}) {
 export async function updateLink(db: Db, id: string, updates: {}) {
   // updateOne does not return the doc, so we need 2 queries
   await db
-    .collection('links')
+    .collection(process.env.DB_LINK_COLLECTION)
     .updateOne(
       { _id: ObjectId.createFromHexString(id) },
       { $set: { ...updates, updatedAt: new Date().toISOString() } }
     );
 
-  const updatedLink = await db.collection('links').findOne({ _id: id });
+  const updatedLink = await db
+    .collection(process.env.DB_LINK_COLLECTION)
+    .findOne({ _id: id });
   return updatedLink;
 }
 
 export async function deleteLink(db: Db, id: string) {
   return await db
-    .collection('links')
+    .collection(process.env.DB_LINK_COLLECTION)
     .deleteOne({ _id: ObjectId.createFromHexString(id) });
 }

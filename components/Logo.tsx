@@ -5,7 +5,7 @@ export default function Logo() {
   return (
     <NextLink href="/" passHref>
       <Link alignSelf="flex-start">
-        <Heading as="h1">campfire</Heading>
+        <Heading as="h1">firelink</Heading>
       </Link>
     </NextLink>
   );

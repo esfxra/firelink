@@ -11,7 +11,10 @@ const convertToSerializable = (user: any) => {
 };
 
 export async function getUsers(db: Db) {
-  const users = await db.collection('users').find().toArray();
+  const users = await db
+    .collection(process.env.DB_USER_COLLECTION)
+    .find()
+    .toArray();
 
   return users.map((user) => {
     return convertToSerializable(user);
@@ -20,7 +23,7 @@ export async function getUsers(db: Db) {
 
 export async function getUserById(db: Db, id: string) {
   const user = await db
-    .collection('users')
+    .collection(process.env.DB_USER_COLLECTION)
     .findOne({ _id: ObjectId.createFromHexString(id) });
 
   return convertToSerializable(user);
@@ -28,7 +31,9 @@ export async function getUserById(db: Db, id: string) {
 
 export async function getUserByUsername(db: Db, username: string) {
   try {
-    const user = await db.collection('users').findOne({ username: username });
+    const user = await db
+      .collection(process.env.DB_USER_COLLECTION)
+      .findOne({ username: username });
 
     if (!user) {
       return { success: false, data: null };
@@ -48,7 +53,7 @@ export async function createUser(db: Db, username: string, password: string) {
 
     // Insert the document with the db driver
     const result = await db
-      .collection('users')
+      .collection(process.env.DB_USER_COLLECTION)
       .insertOne({ username, password: hashedPassword });
 
     // Return success status and data if aknowledged by db
@@ -84,7 +89,9 @@ export async function authenticateUser(
   password: string
 ) {
   try {
-    const user = await db.collection('users').findOne({ username: username });
+    const user = await db
+      .collection(process.env.DB_USER_COLLECTION)
+      .findOne({ username: username });
 
     if (!user) {
       return { success: false, data: null };
@@ -107,7 +114,7 @@ export async function authenticateUser(
 export async function updateUsername(db: Db, id: string, username: string) {
   try {
     const result = await db
-      .collection('users')
+      .collection(process.env.DB_USER_COLLECTION)
       .updateOne(
         { _id: ObjectId.createFromHexString(id) },
         { $set: { ...{ username }, updatedAt: new Date().toISOString() } }

@@ -7,7 +7,7 @@ import Header from '../components/Header';
 export default function Home({ users }) {
   return (
     <Box w={['90%', null, '80%']} m="5vw auto">
-      <Header title="campfire" />
+      <Header title="firelink" />
       <Heading as="h2" fontSize="2xl" mt={5} mb={3}>
         Discover profiles
       </Heading>

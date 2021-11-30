@@ -13,12 +13,14 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
+
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
 import Header from '../../components/Header';
 import LinkEditor from '../../components/admin/LinkEditor';
 import Preview from '../../components/admin/Preview';
+
 import { Link as LinkType } from '../../types';
 
 interface Props {
@@ -33,9 +35,6 @@ interface Props {
 export default function Admin({ user, links }: Props) {
   const { data: session, status } = useSession();
   const [checksum, setChecksum] = useState(0);
-
-  console.log(session);
-  console.log(status);
 
   const loading = status === 'loading';
 
@@ -72,7 +71,7 @@ export default function Admin({ user, links }: Props) {
     <Grid height="100vh" templateRows="auto 1fr auto">
       {/* Header */}
       <Box boxShadow="md" padding={5} zIndex="overlay">
-        <Header title="campfire | admin" />
+        <Header title="firelink | admin" />
       </Box>
 
       {/* Main */}
@@ -111,10 +110,10 @@ export default function Admin({ user, links }: Props) {
         // backgroundColor="blackAlpha.800"
         bg="gray.800"
       >
-        <Text color="white">Campfire &copy; 2021</Text>
+        <Text color="white">firelink &copy; 2021</Text>
 
         <Link
-          href="https://github.com/diegoserranor/campfire"
+          href="https://github.com/esfxra/firelink"
           isExternal={true}
           rel="noreferrer"
         >
