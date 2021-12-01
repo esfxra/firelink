@@ -93,10 +93,12 @@ export default function Header({ title }: HeaderProps) {
       </Head>
       <Logo />
       <HStack>
-        {session && <SignOutButton />}
-        {session && !router.pathname.includes('/admin') && <AdminButton />}
         {!session && !router.pathname.includes('/auth') && <SignInButton />}
         {!session && !router.pathname.includes('/auth') && <SignUpButton />}
+        {session && !router.pathname.includes('/auth') && <SignOutButton />}
+        {session &&
+          !router.pathname.includes('/auth') &&
+          !router.pathname.includes('/admin') && <AdminButton />}
       </HStack>
     </Flex>
   );

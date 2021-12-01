@@ -18,6 +18,8 @@ import AuthLayout from '../../components/auth/AuthLayout';
 import UsernameField from '../../components/auth/UsernameField';
 
 import { AuthApiResponse } from '../../components/auth/auth.types';
+import MainLayout from '../../components/MainLayout';
+import Header from '../../components/Header';
 
 async function registerUsername(userId: string, username: string) {
   try {
@@ -99,7 +101,12 @@ export default function NewUser({ userId }) {
 }
 
 NewUser.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return (
+    <MainLayout>
+      <Header title="firelink | pick a username" />
+      <AuthLayout>{page}</AuthLayout>
+    </MainLayout>
+  );
 };
 
 export async function getServerSideProps(context: any) {
