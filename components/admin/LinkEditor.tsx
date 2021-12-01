@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Center, Button, VStack } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Button, Center, VStack, useBoolean } from '@chakra-ui/react';
+
 import LinkCard from './LinkCard';
+
 import { Link, LinkUpdates } from '../../types';
 
 interface Props {
@@ -11,8 +13,10 @@ interface Props {
 
 export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
   const [links, setLinks] = useState(initialLinks);
+  const [isLoading, setIsLoading] = useBoolean(false);
 
   const addLink = async () => {
+    setIsLoading.on();
     const newLink = {
       url: '',
       title: '',
@@ -20,7 +24,6 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
     };
 
     const { insertedId } = await postLinkToDB(newLink);
-    console.log(insertedId);
     /**
      * Reset all links
      * @note This merges the previous state with the new one;
@@ -30,6 +33,7 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
      * @note Merging in such a way so that the new link is at the top of the array.
      */
     setLinks((state) => [{ _id: insertedId, ...newLink }, ...state]);
+    setIsLoading.off();
     onChange();
   };
 
@@ -62,6 +66,8 @@ export default function LinkEditor({ initialLinks, userID, onChange }: Props) {
             color="white"
             bgGradient="linear(to-r, red.500, orange.500)"
             _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+            isLoading={isLoading}
+            loadingText="Creating link"
             onClick={addLink}
           >
             Create a new link
