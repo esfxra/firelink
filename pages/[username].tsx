@@ -40,9 +40,15 @@ export default function User({ user, links }) {
         </VStack>
 
         {/* Links */}
-        <VStack align="stretch" spacing={3}>
+        <VStack
+          w={{ base: '100%', md: '500px' }}
+          ml="auto"
+          mr="auto"
+          align="stretch"
+          spacing={4}
+        >
           {!links.length ? (
-            <Text>No links to see (yet).</Text>
+            <Text alignSelf="center">No links to see (yet).</Text>
           ) : (
             links.map((link) => {
               if (!link.published) {
