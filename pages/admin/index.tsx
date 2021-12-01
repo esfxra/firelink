@@ -75,7 +75,10 @@ export default function Admin({ user, links }: Props) {
       </Box>
 
       {/* Main */}
-      <Grid templateColumns="1.5fr 10px 1fr" bg="gray.50">
+      <Grid
+        templateColumns={{ base: '1fr', lg: '1.5fr 10px 1fr' }}
+        bg="gray.50"
+      >
         {/* Links editor */}
         <Box padding={5}>
           <Heading as="h2" size="lg" mb={10}>
@@ -88,12 +91,12 @@ export default function Admin({ user, links }: Props) {
           />
         </Box>
 
-        <Center>
+        <Center display={{ base: 'none', lg: 'block' }}>
           <Divider orientation="vertical" />
         </Center>
 
         {/* User profile page preview */}
-        <Box padding={5}>
+        <Box padding={5} display={{ base: 'none', lg: 'block' }}>
           <Heading as="h2" size="lg" mb={10}>
             Preview
           </Heading>
@@ -157,8 +160,6 @@ export async function getServerSideProps(context) {
   }
 
   const links = await getLinksByUserID(db, session.user.id);
-
-  console.log(links);
 
   return {
     props: { user, links },

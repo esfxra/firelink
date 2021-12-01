@@ -66,7 +66,13 @@ export default function LinkCard({ link, editLink, deleteLink }: Props) {
             cursor="pointer"
             color="blackAlpha"
           />
-          DELETE
+          <Box
+            as="span"
+            ml={{ base: 0, md: 2 }}
+            display={{ base: 'none', md: 'block' }}
+          >
+            DELETE
+          </Box>
         </Button>
       </Grid>
     </Box>
