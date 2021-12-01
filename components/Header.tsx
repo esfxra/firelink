@@ -83,8 +83,6 @@ export default function Header({ title }: HeaderProps) {
   const { data: session } = useSession();
   const router = useRouter();
 
-  router.pathname.includes;
-
   return (
     <Flex justifyContent="space-between" alignItems="center">
       <Head>
@@ -92,14 +90,15 @@ export default function Header({ title }: HeaderProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Logo />
-      <HStack>
-        {!session && !router.pathname.includes('/auth') && <SignInButton />}
-        {!session && !router.pathname.includes('/auth') && <SignUpButton />}
-        {session && !router.pathname.includes('/auth') && <SignOutButton />}
-        {session &&
-          !router.pathname.includes('/auth') &&
-          !router.pathname.includes('/admin') && <AdminButton />}
-      </HStack>
+      {/* NOTE: Never show session-related buttons in auth pages */}
+      {!router.pathname.includes('/auth') && (
+        <HStack>
+          {!session && <SignInButton />}
+          {!session && <SignUpButton />}
+          {session && <SignOutButton />}
+          {session && !router.pathname.includes('/admin') && <AdminButton />}
+        </HStack>
+      )}
     </Flex>
   );
 }

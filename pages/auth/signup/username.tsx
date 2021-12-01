@@ -4,7 +4,6 @@ import { Link, Center } from '@chakra-ui/react';
 import MainLayout from '../../../components/MainLayout';
 import AuthLayout from '../../../components/auth/AuthLayout';
 import SignUpLayout from '../../../components/auth/SignUpLayout';
-import Header from '../../../components/Header';
 import SignUpForm from '../../../components/auth/SignUpForm';
 
 export default function SignUpWithUsername() {
@@ -29,8 +28,7 @@ export default function SignUpWithUsername() {
 SignUpWithUsername.getLayout = function getLayout(page) {
   return (
     <MainLayout>
-      <Header title="firelink | sign up" />
-      <AuthLayout>
+      <AuthLayout title="firelink | sign up">
         <SignUpLayout>{page}</SignUpLayout>
       </AuthLayout>
     </MainLayout>
