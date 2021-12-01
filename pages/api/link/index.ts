@@ -19,7 +19,7 @@ handler.post(async (req, res) => {
     url: req.body.url,
     title: req.body.title,
     published: req.body.published,
-    createdBy: req.user.id,
+    createdBy: req.user.userId,
   });
 
   res.json({ insertedId });
