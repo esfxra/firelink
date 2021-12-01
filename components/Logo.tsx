@@ -5,7 +5,9 @@ export default function Logo() {
   return (
     <NextLink href="/" passHref>
       <Link alignSelf="flex-start">
-        <Heading as="h1">firelink</Heading>
+        <Heading as="h1" fontSize={{ base: '2.25rem', sm: '2.5rem' }}>
+          firelink
+        </Heading>
       </Link>
     </NextLink>
   );
