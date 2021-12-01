@@ -5,19 +5,17 @@ import {
   Divider,
   Link,
   Center,
-  Flex,
-  Text,
   Grid,
   Heading,
   Button,
   Box,
 } from '@chakra-ui/react';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 import { getLinksByUserID } from '../../db/link';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 import LinkEditor from '../../components/admin/LinkEditor';
 import Preview from '../../components/admin/Preview';
 
@@ -104,27 +102,7 @@ export default function Admin({ user, links }: Props) {
         </Box>
       </Grid>
 
-      {/* Footer */}
-      <Flex
-        paddingX={5}
-        paddingY={3}
-        justifyContent="space-between"
-        alignItems="center"
-        // backgroundColor="blackAlpha.800"
-        bg="gray.800"
-      >
-        <Text color="white">firelink &copy; 2021</Text>
-
-        <Link
-          href="https://github.com/esfxra/firelink"
-          isExternal={true}
-          rel="noreferrer"
-        >
-          <Button colorScheme="blackAlpha" rightIcon={<ExternalLinkIcon />}>
-            GitHub repo
-          </Button>
-        </Link>
-      </Flex>
+      <Footer />
     </Grid>
   );
 }

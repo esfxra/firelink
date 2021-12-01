@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <Box as="footer" bgColor="gray.900">
       <Flex
-        w={{ base: '90%', md: '80%', xl: '1200px' }}
+        w={{ base: '90%', md: '80%', xl: '1100px' }}
         pt={5}
         pb={5}
         m="0 auto"
