@@ -1,4 +1,4 @@
-import LinkNext from 'next/link';
+import NextLink from 'next/link';
 import {
   Text,
   Link,
@@ -13,6 +13,7 @@ import { FiSliders, FiEdit, FiLock } from 'react-icons/fi';
 
 import { connectToDB } from '../db/connect';
 import { getUsers } from '../db/user';
+import MainLayout from '../components/MainLayout';
 import Header from '../components/Header';
 
 function Perk({
@@ -31,7 +32,7 @@ function Perk({
         <Text
           ml={3}
           fontSize="xl"
-          fontWeight="500"
+          fontWeight="bold"
           bgGradient="linear(to-r, red.500, orange.500)"
           bgClip="text"
         >
@@ -45,8 +46,7 @@ function Perk({
 
 export default function Home({ users }) {
   return (
-    <Box w={['90%', null, '80%']} m="5vw auto">
-      <Header title="firelink | one link to rule them all" />
+    <>
       {/* Hero text */}
       <Box mt={16} mb={16}>
         <Text
@@ -62,13 +62,17 @@ export default function Home({ users }) {
         <Text mb={3} fontSize={{ base: 'xl', sm: '2xl', md: '3xl' }}>
           Connect with your audience using a single link
         </Text>
-        <Button
-          color="white"
-          bgGradient="linear(to-r, red.500, orange.500)"
-          _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
-        >
-          Get started
-        </Button>
+        <NextLink href="/auth/signup" passHref>
+          <Link>
+            <Button
+              color="white"
+              bgGradient="linear(to-r, red.500, orange.500)"
+              _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+            >
+              Get started
+            </Button>
+          </Link>
+        </NextLink>
       </Box>
       {/* The perks */}
       <Heading as="h2" fontSize="2xl" mb={3}>
@@ -82,17 +86,17 @@ export default function Home({ users }) {
         <Perk
           icon={FiEdit}
           title="Customizable"
-          text="Have control over the look and feel of your micro link site with themes and other options."
+          text="Have control over the look and feel of your micro link site with themes and other options"
         />
         <Perk
           icon={FiSliders}
           title="Easy to manage"
-          text="Quickly set up your profile and start adding links with our user friendly editor."
+          text="Quickly set up your profile and start adding links with our user friendly editor"
         />
         <Perk
           icon={FiLock}
           title="Privacy-first"
-          text="Get privacy-conscious insights from your visitors without tracking any personal data."
+          text="Get privacy-conscious insights from your visitors without tracking any personal data"
         />
       </SimpleGrid>
       {/* Profiles list */}
@@ -103,20 +107,29 @@ export default function Home({ users }) {
         {users.map((user: any) => {
           if (user.username) {
             return (
-              <LinkNext href={`/${user.username}`} key={user.username}>
+              <NextLink href={`/${user.username}`} key={user.username}>
                 <Link mr={3} mb={3}>
                   <Button colorScheme="gray" variant="outline">
                     @{user.username}
                   </Button>
                 </Link>
-              </LinkNext>
+              </NextLink>
             );
           }
         })}
       </Flex>
-    </Box>
+    </>
   );
 }
+
+Home.getLayout = function getLayout(page) {
+  return (
+    <MainLayout>
+      <Header title="firelink | one link to rule them all" />
+      {page}
+    </MainLayout>
+  );
+};
 
 export async function getStaticProps() {
   const { db } = await connectToDB();
