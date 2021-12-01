@@ -1,7 +1,6 @@
-import { Button, VStack, useBoolean } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
-
-import { GitHubIcon, GitLabIcon } from '../Icons';
+import { Icon, Button, VStack, useBoolean } from '@chakra-ui/react';
+import { FiGithub, FiGitlab } from 'react-icons/fi';
 
 function handleGitHubAuth() {
   signIn('github', {
@@ -28,7 +27,7 @@ export default function AuthProviders() {
         isFullWidth
         isLoading={isLoadingGitHub}
         loadingText="Signing in with GitHub"
-        leftIcon={<GitHubIcon color="white" />}
+        leftIcon={<Icon as={FiGithub} color="white" />}
         onClick={() => {
           setIsLoadingGitHub.on();
           handleGitHubAuth();
@@ -43,7 +42,7 @@ export default function AuthProviders() {
         isFullWidth
         isLoading={isLoadingGitLab}
         loadingText="Signing in with GitLab"
-        leftIcon={<GitLabIcon color="orange.500" />}
+        leftIcon={<Icon as={FiGitlab} color="white" />}
         onClick={() => {
           setIsLoadingGitLab.on();
           handleGitLabAuth();

@@ -14,6 +14,7 @@ import {
 import { connectToDB } from '../../db/connect';
 import { getUserById } from '../../db/user';
 
+import MainLayout from '../../components/MainLayout';
 import AuthLayout from '../../components/auth/AuthLayout';
 import UsernameField from '../../components/auth/UsernameField';
 
@@ -99,7 +100,11 @@ export default function NewUser({ userId }) {
 }
 
 NewUser.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return (
+    <MainLayout>
+      <AuthLayout title="firelink | pick a username">{page}</AuthLayout>
+    </MainLayout>
+  );
 };
 
 export async function getServerSideProps(context: any) {

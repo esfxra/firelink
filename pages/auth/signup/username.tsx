@@ -1,6 +1,7 @@
 import NextLink from 'next/link';
 import { Link, Center } from '@chakra-ui/react';
 
+import MainLayout from '../../../components/MainLayout';
 import AuthLayout from '../../../components/auth/AuthLayout';
 import SignUpLayout from '../../../components/auth/SignUpLayout';
 import SignUpForm from '../../../components/auth/SignUpForm';
@@ -26,8 +27,10 @@ export default function SignUpWithUsername() {
 
 SignUpWithUsername.getLayout = function getLayout(page) {
   return (
-    <AuthLayout>
-      <SignUpLayout>{page}</SignUpLayout>
-    </AuthLayout>
+    <MainLayout>
+      <AuthLayout title="firelink | sign up">
+        <SignUpLayout>{page}</SignUpLayout>
+      </AuthLayout>
+    </MainLayout>
   );
 };

@@ -10,83 +10,70 @@ interface HeaderProps {
   title: string;
 }
 
-function AdminButton({ session, router }) {
-  if (session && router.pathname !== '/admin') {
-    return (
-      <Button
-        color="white"
-        bgGradient="linear(to-r, red.500, orange.500)"
-        _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
-        onClick={() => router.push('/admin')}
-      >
-        Admin
-      </Button>
-    );
-  }
-
-  return null;
+function AdminButton() {
+  return (
+    <NextLink href="/admin">
+      <Link>
+        <Button
+          color="white"
+          bgGradient="linear(to-r, red.500, orange.500)"
+          _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+        >
+          Admin
+        </Button>
+      </Link>
+    </NextLink>
+  );
 }
 
-function SignInButton({ session }) {
-  if (!session) {
-    return (
-      <NextLink href="/auth/signin">
-        <Link>
-          <Button
-            color="red.500"
-            borderWidth="1px"
-            borderColor="red.500"
-            backgroundColor="transparent"
-            _hover={{
-              color: 'red.600',
-              borderColor: 'red.600',
-              backgroundColor: 'transparent',
-            }}
-          >
-            Sign in
-          </Button>
-        </Link>
-      </NextLink>
-    );
-  }
-
-  return null;
+function SignInButton() {
+  return (
+    <NextLink href="/auth/signin">
+      <Link>
+        <Button
+          color="red.500"
+          borderWidth="1px"
+          borderColor="red.500"
+          backgroundColor="transparent"
+          _hover={{
+            color: 'red.600',
+            borderColor: 'red.600',
+            backgroundColor: 'transparent',
+          }}
+        >
+          Sign in
+        </Button>
+      </Link>
+    </NextLink>
+  );
 }
 
-function SignUpButton({ session }) {
-  if (!session) {
-    return (
-      <NextLink href="/auth/signup">
-        <Link>
-          <Button
-            color="white"
-            bgGradient="linear(to-r, red.500, orange.500)"
-            _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
-          >
-            Sign up
-          </Button>
-        </Link>
-      </NextLink>
-    );
-  }
-
-  return null;
+function SignUpButton() {
+  return (
+    <NextLink href="/auth/signup">
+      <Link>
+        <Button
+          color="white"
+          bgGradient="linear(to-r, red.500, orange.500)"
+          _hover={{ bgGradient: 'linear(to-r, red.600, orange.500)' }}
+        >
+          Sign up
+        </Button>
+      </Link>
+    </NextLink>
+  );
 }
 
-function SignOutButton({ session }) {
-  if (session) {
-    return (
-      <Button
-        colorScheme="gray"
-        variant="outline"
-        onClick={() => signOut({ callbackUrl: '/' })}
-      >
-        Sign out
-      </Button>
-    );
-  }
-
-  return null;
+function SignOutButton() {
+  return (
+    <Button
+      colorScheme="gray"
+      variant="outline"
+      onClick={() => signOut({ callbackUrl: '/' })}
+    >
+      Sign out
+    </Button>
+  );
 }
 
 /**
@@ -103,12 +90,15 @@ export default function Header({ title }: HeaderProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Logo />
-      <HStack>
-        <SignOutButton session={session} />
-        <SignInButton session={session} />
-        <SignUpButton session={session} />
-        <AdminButton session={session} router={router} />
-      </HStack>
+      {/* NOTE: Never show session-related buttons in auth pages */}
+      {!router.pathname.includes('/auth') && (
+        <HStack>
+          {!session && <SignInButton />}
+          {!session && <SignUpButton />}
+          {session && <SignOutButton />}
+          {session && !router.pathname.includes('/admin') && <AdminButton />}
+        </HStack>
+      )}
     </Flex>
   );
 }
